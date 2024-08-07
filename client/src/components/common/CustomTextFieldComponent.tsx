@@ -1,4 +1,4 @@
-import { Edit, Save, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton, InputAdornment, TextField } from '@mui/material'
 import React, { useState } from 'react'
 
@@ -19,6 +19,7 @@ export interface CustomTextFieldProps {
 
 const CustomTextFieldComponent = (props: CustomTextFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  console.log(props.formik)
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -83,7 +84,7 @@ const CustomTextFieldComponent = (props: CustomTextFieldProps) => {
           variant={props.variant || 'standard'}
           autoComplete={props.fieldName === 'password' || props.fieldName === 'confirmPassword' ? 'new-password' : 'off'}
           value={props.formik.values[props.fieldName]}
-          onChange={handleChange} // Değişiklik burada
+          onChange={handleChange}
           error={(props.formik.touched[props.fieldName]) && Boolean(props.formik.errors[props.fieldName])}
           helperText={(props.formik.touched[props.fieldName]) && props.formik.errors[props.fieldName]}
           disabled={props.disabled}

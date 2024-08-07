@@ -1,6 +1,6 @@
 import './App.css'
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { CustomThemeContext, CustomThemeProvider } from './contexts/CustomThemeContext';
+import { CustomThemeContext } from './contexts/CustomThemeContext';
 import { darkTheme, lightTheme } from './themes';
 import { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -11,11 +11,10 @@ import SignInPage from './pages/mainLayoutPages/SignInPage';
 
 function App() {
 
-  const { theme, toggleTheme } = useContext(CustomThemeContext);
+  const { theme } = useContext(CustomThemeContext);
   return (
     <>
       <ThemeProvider theme={theme ? darkTheme : lightTheme}>
-        {/* <button onClick={() => toggleTheme()}>Toggle Theme</button> */}
         <CssBaseline />
         <Router>
           <Routes >
