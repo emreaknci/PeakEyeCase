@@ -2,9 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { BlogListDto } from '../../dtos/blogListDto'
 import BlogCard from '../../components/layouts/user/BlogCard'
 import { Grid, Typography } from '@mui/material'
+import DialogComponent from '../../components/common/DialogComponent'
+import { toast } from 'react-toastify'
 
 const MyBlogs = () => {
     const [blogs, setBlogs] = useState<BlogListDto[]>([])
+    const [openAlert, setOpenAlert] = useState(false);
+    const [alertText, setAlertText] = useState('');
+    const [currentBlog, setCurrentBlog] = useState<BlogListDto>();
+
 
     useEffect(() => {
         const blog: BlogListDto = {
@@ -22,6 +28,18 @@ const MyBlogs = () => {
         setBlogs([blog, blog, blog, blog, blog, blog, blog, blog]);
     }, [])
 
+    const handleDeleteBlog = (blog: BlogListDto) => {
+        setOpenAlert(true);
+        setAlertText(`Are you sure you want to delete blog '${blog.title}'?`);
+        setCurrentBlog(blog);
+    }
+
+    const handleDeleteBlogConfirm = async () => {
+        toast.dismiss();
+        toast.success(`Blog '${currentBlog?.title}' deleted successfully!`);
+        setOpenAlert(false);
+    }
+
     return (
         <>
             <Grid container spacing={2}>
@@ -30,11 +48,20 @@ const MyBlogs = () => {
                 </Grid>
                 {blogs.map((blog, i) => (
                     <Grid item sm={12} md={6} key={i}>
-                        <BlogCard blog={blog} />
+                        <BlogCard blog={blog} handleDeleteBlog={handleDeleteBlog} />
                     </Grid>
                 ))}
 
             </Grid>
+            {openAlert && (
+                <DialogComponent
+                    title='Caution'
+                    open={openAlert}
+                    handleClose={() => setOpenAlert(false)}
+                    handleConfirm={async () => await handleDeleteBlogConfirm()}
+                    text={alertText}
+                />
+            )}
         </>
     )
 }

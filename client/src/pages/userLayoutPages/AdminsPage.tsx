@@ -61,7 +61,7 @@ const AdminsPage = () => {
 
     const handleRevokeAuth = (user: UserDto) => {
         setOpenAlert(true);
-        setAlertText(`Are you sure you want to revoke authorization for user ${currentUser?.fullName}?`);
+        setAlertText(`Are you sure you want to revoke authorization for user ${user?.fullName}?`);
         setCurrentUser(user);
     }
 
