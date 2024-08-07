@@ -1,48 +1,18 @@
 import React, { useContext, useEffect } from 'react'
-import { Box, Card, CardContent, CardMedia, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material'
 import { BlogListDto } from '../../dtos/blogListDto'
 import Loading from '../../components/common/Loading'
 import AdsComponent from '../../components/common/AdsComponent'
 import { CustomThemeContext } from '../../contexts/CustomThemeContext'
 import CategoryButton from '../../components/layouts/main/CategoryButton'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import BlogList from '../../components/layouts/main/BlogList'
+import { Category } from '../../models/category'
 
 
-const LatestBlogs = () => {
-  const [blogs, setBlogs] = React.useState<BlogListDto[]>([]);
-
-  useEffect(() => {
-    const blog: BlogListDto = {
-      id: 1,
-      title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
-      imageUri: 'https://etgtemizlik.com/yp/images/hizmet/default.png',
-      createdAt: new Date(),
-      categoryId: 1, categoryName: 'Technology',
-      authorId: 1, authorFullName: 'John Doe',
-      authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png-clipart-man-wearing-blue-shirt-illustration-computer-icons-avatar-user-login-avatar-blue-child.png',
-    }
-    setBlogs([blog, blog, blog, blog, blog, blog, blog, blog, blog])
-  }, [])
-
-  return (
-    <BlogList title='Latest Blogs' blogs={blogs} showLoadMoreButton={true} />
-  )
-}
-
-const FeaturedBlog = () => {
+const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
   const themeContext = useContext(CustomThemeContext);
   const navigate = useNavigate()
-
-  const blog = {
-    id: 1,
-    title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
-    imageUri: 'https://i.pinimg.com/originals/0d/84/8c/0d848c32d1181011fba9fec18e461531.jpg',
-    createdAt: new Date(),
-    categoryId: 1, categoryName: 'Technology',
-    authorId: 1, authorFullName: 'John Doe',
-    authorImageUri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQttE9sxpEu1EoZgU2lUF_HtygNLCaz2rZYHg&s',
-  };
 
   return (
     <Box sx={{
@@ -53,8 +23,8 @@ const FeaturedBlog = () => {
       <CardMedia component="img"
         image={blog.imageUri} alt={blog.title}
         sx={{
-          width: '100%', objectFit: 'fill',
-          height: { xs: '200px', sm: 'auto' },
+          width: '100%', objectFit: 'overflow',
+          height: { xs: 200, sm: 300, md: 400 },
           borderRadius: 3,
         }}
       />
@@ -96,6 +66,34 @@ const FeaturedBlog = () => {
 
 const HomePage = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { id } = useParams()
+  const [category, setCategory] = React.useState<Category | null>(null)
+  const [blogs, setBlogs] = React.useState<BlogListDto[]>([]);
+  const [featuredBlog, setFeaturedBlog] = React.useState<BlogListDto | null>(null);
+
+  useEffect(() => {
+    const blog: BlogListDto = {
+      id: 1,
+      title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
+      imageUri: 'https://marketplace.canva.com/EAFHNkHvFsA/1/0/1600w/canva-grey-minimalist-tips-blog-banner-yR0ULIwVxyE.jpg',
+      createdAt: new Date(),
+      categoryId: 1, categoryName: 'Technology',
+      authorId: 1, authorFullName: 'John Doe',
+      authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png-clipart-man-wearing-blue-shirt-illustration-computer-icons-avatar-user-login-avatar-blue-child.png',
+    }
+    setFeaturedBlog(blog)
+    setBlogs([blog, blog, blog, blog, blog, blog, blog, blog, blog])
+  }, [])
+
+  useEffect(() => {
+    if (id) {
+      const category: Category = {
+        id: 1,
+        name: 'Technology',
+      }
+      setCategory(category)
+    }
+  }, [id])
 
   return (
     <>
@@ -104,9 +102,12 @@ const HomePage = () => {
           <Loading />
         </Grid> :
         <>
-          <FeaturedBlog />
+          {id && <Typography variant='h6' sx={{ fontWeight: 'bold', textAlign: 'center', my: 2 }}>
+            Category: {category?.name} Blogs
+          </Typography>}
+          {featuredBlog && <FeaturedBlog blog={featuredBlog} />}
           <AdsComponent />
-          <LatestBlogs />
+          <BlogList title='Latest Blogs' blogs={blogs} showLoadMoreButton={true} />
           <AdsComponent />
         </>
       }

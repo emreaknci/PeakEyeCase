@@ -23,6 +23,7 @@ const MainLayoutRoutes = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />          
           <Route path="/blog" element={<HomePage />} />     
+          <Route path="/category/:id" element={<HomePage />} />     
           <Route path="/blog/:id" element={<BlogDetailPage />} />     
           <Route path="/author/:id" element={<AuthorPage />} />
           <Route path="*" element={<Navigate to={"/"} />} />
