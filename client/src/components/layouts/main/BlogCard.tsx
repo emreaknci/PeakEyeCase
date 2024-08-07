@@ -2,9 +2,11 @@ import { Card, CardMedia, CardContent, Typography, Button, Box } from '@mui/mate
 import { useContext } from 'react'
 import { BlogListDto } from '../../../dtos/blogListDto'
 import { CustomThemeContext } from '../../../contexts/CustomThemeContext'
+import CategoryButton from './CategoryButton'
+import { useNavigate } from 'react-router-dom'
 
 const BlogCard = () => {
-    const themeContext = useContext(CustomThemeContext)
+    const navigate = useNavigate()
     const blog: BlogListDto = {
         id: 1,
         title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
@@ -29,26 +31,17 @@ const BlogCard = () => {
             }}>
             <CardMedia component={'img'} image={blog.imageUri} sx={{ height: 150, borderRadius: 1 }} />
             <CardContent sx={{ px: 0 }}>
-                <Button size="small" variant="contained" sx={{
-                    bgcolor: themeContext.theme ? "#1b1e34" : "#f6f8ff",
-                    color: themeContext.theme ? "#4561e2" : "#4B6BFB",
-                    '&:hover': {
-                        bgcolor: themeContext.theme ? "#1b1e34" : "#f6f8ff",
-                    }
-                }}>
-                    {blog.categoryName}
-                </Button>
-                <Typography variant="h5" component="div">
+                <CategoryButton name={blog.categoryName} id={blog.categoryId} />
+                <Typography variant="h6" component="div" onClick={() => { navigate(`/blog/${blog.id}`) }}
+                    sx={{
+                        cursor: 'pointer', color: 'text.primary',
+                        fontWeight: 'bold', mt: 1
+                    }}>
                     {blogTitle(blog.title)}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {blog.writerFullName}
-                </Typography>
             </CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-                <CardMedia
-                    component="img"
-                    image={blog.writerImageUri}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <CardMedia component="img" image={blog.writerImageUri}
                     sx={{ width: 40, height: 40, borderRadius: '50%', mr: 2 }}
                 />
                 <Typography variant="body2" color="text.primary" sx={{ flexGrow: 1 }}>

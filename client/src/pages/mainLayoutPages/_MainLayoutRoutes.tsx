@@ -4,8 +4,7 @@ import { Container } from '@mui/material'
 import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './HomePage';
 import Footer from '../../components/layouts/main/Footer';
-import SignInPage from './SignInPage';
-import SignUpPage from './SignUpPage';
+import BlogDetailPage from './BlogDetailPage';
 
 const MainLayoutRoutes = () => {
   return (
@@ -21,7 +20,9 @@ const MainLayoutRoutes = () => {
       }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/Home" element={<HomePage />} />          
+          <Route path="/home" element={<HomePage />} />          
+          <Route path="/blog" element={<HomePage />} />     
+          <Route path="/blog/:id" element={<BlogDetailPage />} />     
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Container>

@@ -64,7 +64,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar variant='outlined' position="static" sx={{
+      <AppBar variant='outlined' elevation={0} position="static" sx={{
         bgcolor: theme.palette.background.default,
         color: theme.palette.text.primary,
         border: 'none',
