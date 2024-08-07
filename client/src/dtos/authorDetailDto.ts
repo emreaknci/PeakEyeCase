@@ -1,8 +1,8 @@
-export interface WriterDetailDto {
+export interface AuthorDetailDto {
     id: number;
     fullName: string;
     email: string;
-    createdAt: string;
+    createdAt: Date;
     about: string;
     imageUri: string;
     socialLinks: string[];

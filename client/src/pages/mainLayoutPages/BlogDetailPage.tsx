@@ -17,7 +17,7 @@ const BlogDetailPage = () => {
       imageUri: 'https://i.pinimg.com/originals/0d/84/8c/0d848c32d1181011fba9fec18e461531.jpg',
       createdAt: new Date(),
       categoryId: 1, categoryName: 'Technology',
-      writerId: 1, writerFullName: 'John Doe',
+      authorId: 1, authorFullName: 'John Doe',
       content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt.'
     })
 
@@ -46,7 +46,7 @@ const BlogDetailPage = () => {
                   sx={{ width: 40, height: 40, borderRadius: '50%', mb: { xs: 1, sm: 0 }, mr: { sm: 2 } }}
                 />
                 <Typography variant="body2" color="text.primary" sx={{ flexGrow: 1, textAlign: { xs: 'center', sm: 'left' } }}>
-                  {blog.writerFullName}
+                  {blog.authorFullName}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {blog.createdAt.toLocaleDateString()}

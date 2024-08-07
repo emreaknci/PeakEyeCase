@@ -6,6 +6,6 @@ export interface BlogDetailDto {
     categoryName: string;
     createdAt: Date;
     imageUri: string;
-    writerFullName: string;
-    writerId: number;
+    authorFullName: string;
+    authorId: number;
 }

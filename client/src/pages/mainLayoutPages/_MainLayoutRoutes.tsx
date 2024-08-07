@@ -5,8 +5,10 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './HomePage';
 import Footer from '../../components/layouts/main/Footer';
 import BlogDetailPage from './BlogDetailPage';
+import AuthorPage from './AuthorPage';
 
 const MainLayoutRoutes = () => {
+
   return (
     <>
       <Navbar />
@@ -16,13 +18,13 @@ const MainLayoutRoutes = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: 'calc(100vh - 64px)',
       }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/home" element={<HomePage />} />          
           <Route path="/blog" element={<HomePage />} />     
           <Route path="/blog/:id" element={<BlogDetailPage />} />     
+          <Route path="/author/:id" element={<AuthorPage />} />
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Container>

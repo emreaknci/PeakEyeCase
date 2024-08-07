@@ -5,7 +5,7 @@ export interface BlogListDto {
     categoryName: string;
     createdAt: Date;
     imageUri: string;
-    writerFullName: string;
-    writerId: number;
-    writerImageUri: string;
+    authorFullName: string;
+    authorId: number;
+    authorImageUri: string;
 }

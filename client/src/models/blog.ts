@@ -9,8 +9,8 @@ export interface Blog {
     category: Category;
     createdAt: Date;
     imageUri: string;
-    writer: User;
-    writerId: number;
+    author: User;
+    authorId: number;
     isDeleted: boolean;
     isHidden: boolean;
 }
