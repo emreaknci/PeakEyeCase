@@ -8,4 +8,6 @@ export interface BlogDetailDto {
     imageUri: string;
     authorFullName: string;
     authorId: number;
+    isDeleted: boolean;
+    isHidden: boolean;
 }

@@ -80,6 +80,8 @@ const HomePage = () => {
       categoryId: 1, categoryName: 'Technology',
       authorId: 1, authorFullName: 'John Doe',
       authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png-clipart-man-wearing-blue-shirt-illustration-computer-icons-avatar-user-login-avatar-blue-child.png',
+      isDeleted: false,
+      isHidden: false,
     }
     setFeaturedBlog(blog)
     setBlogs([blog, blog, blog, blog, blog, blog, blog, blog, blog])
