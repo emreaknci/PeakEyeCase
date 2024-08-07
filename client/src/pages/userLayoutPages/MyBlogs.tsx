@@ -47,7 +47,7 @@ const MyBlogs = () => {
                     <Typography variant="h4">My Blogs</Typography>
                 </Grid>
                 {blogs.map((blog, i) => (
-                    <Grid item sm={12} md={6} key={i}>
+                    <Grid item sm={12} md={6} lg={4} key={i}>
                         <BlogCard blog={blog} handleDeleteBlog={handleDeleteBlog} />
                     </Grid>
                 ))}

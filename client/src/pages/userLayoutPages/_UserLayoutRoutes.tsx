@@ -5,21 +5,25 @@ import ProfilePage from './ProfilePage'
 import MyBlogs from './MyBlogs'
 import AdminsPage from './AdminsPage'
 import AddNewAdminPage from './AddNewAdminPage'
+import AuthorsPage from './AuthorsPage'
+import AuthorDetailPage from './AuthorDetailPage'
 
 const UserLayoutRoutes = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Navbar />
       <Box component="main" sx={{ flexGrow: 1, p: { xs: 3, md: 3 }, pt: { xs: 10, md: 10 } }}>
-          <Routes>
-            <Route path="/" element={<ProfilePage />} />
-            <Route path="/my-profile" element={<ProfilePage />} />
-            <Route path="/my-blogs" element={<MyBlogs />} />
-            <Route path="/admins" element={<AdminsPage />} />
-            <Route path="/add-admin" element={<AddNewAdminPage />} />
+        <Routes>
+          <Route path="/" element={<ProfilePage />} />
+          <Route path="/my-profile" element={<ProfilePage />} />
+          <Route path="/my-blogs" element={<MyBlogs />} />
+          <Route path="/admins" element={<AdminsPage />} />
+          <Route path="/add-admin" element={<AddNewAdminPage />} />
+          <Route path="/authors" element={<AuthorsPage />} />
+          <Route path="/authors/:id" element={<AuthorDetailPage />} />
 
-            <Route path="*" element={<Navigate to={"/me"} />} />
-          </Routes>
+          <Route path="*" element={<Navigate to={"/me"} />} />
+        </Routes>
       </Box>
     </Box>
   )

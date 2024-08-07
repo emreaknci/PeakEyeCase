@@ -1,4 +1,4 @@
-import { Box, Button, Paper, Typography } from '@mui/material'
+import { Box, Button, Card, CardContent, CardMedia, Paper, Typography } from '@mui/material'
 import { BlogListDto } from '../../../dtos/blogListDto'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -19,27 +19,36 @@ const BlogCard = (props: BlogCardProps) => {
         toast.info("Blog visibility is changed")
     }
 
+    const title = props.blog.title.length > 50 ? props.blog.title.substring(0, 50) + '...' : props.blog.title
+
     return (
-        <Paper variant="outlined" sx={{ padding: 2, display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="body1" color="green">Active</Typography>
-                <CategoryButton name={props.blog.categoryName} id={props.blog.categoryId} />
-            </Box>
-            <Typography variant="h6">{props.blog.title}</Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Button variant="text" color="info" onClick={() => { navigate(`/author/${props.blog.authorId}`) }}>View Author</Button>
-                <Button variant="text" color="info" onClick={() => { navigate(`/blog/${props.blog.id}`) }}>View Blog</Button>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Button variant="text" color="error" onClick={() => props.handleDeleteBlog(props.blog)}>Delete</Button>
-                <Button variant="text" color="warning" onClick={handleVisibilityChange}>Change Visibility</Button>
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="body2">
-                    <b>Created At:</b> {props.blog.createdAt.toLocaleDateString()}
+        <Card variant="outlined" sx={{ padding: 2, display: 'flex', flexDirection: 'column' }}>
+
+            <CardContent>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body1" color="green">Active</Typography>
+                    <CategoryButton name={props.blog.categoryName} id={props.blog.categoryId} />
+                </Box>
+                <Typography variant="h6" sx={{ marginTop: 1 }}>
+                    {title}
                 </Typography>
-            </Box>
-        </Paper>
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+                    <Button variant="text" color="info" onClick={() => { navigate(`/author/${props.blog.authorId}`) }}>View Author</Button>
+                    <Button variant="text" color="info" onClick={() => { navigate(`/blog/${props.blog.id}`) }}>View Blog</Button>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 1 }}>
+                    <Button variant="text" color="error" onClick={() => props.handleDeleteBlog(props.blog)}>Delete</Button>
+                    <Button variant="text" color="warning" onClick={handleVisibilityChange}>Change Visibility</Button>
+                </Box>
+
+                <Box sx={{ marginTop: 1 }}>
+                    <Typography variant="body2">
+                        <b>Created At:</b> {props.blog.createdAt.toLocaleDateString()}
+                    </Typography>
+                </Box>
+            </CardContent>
+        </Card>
     )
 }
 

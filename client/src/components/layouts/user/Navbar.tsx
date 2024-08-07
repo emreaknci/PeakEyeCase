@@ -23,7 +23,7 @@ import BookIcon from '@mui/icons-material/Book';
 import ThemeSwitcher from '../../common/ToggleThemeSwitch';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -101,7 +101,8 @@ const userIconMap = [
 
 const adminIconMap = [
   { name: 'Dashboard', icon: <DashboardIcon />, link: 'dashboard' },
-  { name: 'Admins', icon: <SupervisorAccountIcon />, link: 'admins' }
+  { name: 'Admins', icon: <AdminPanelSettingsIcon />, link: 'admins' },
+  { name: 'Authors', icon: <SupervisorAccountIcon  />, link: 'authors' }
 ];
 
 

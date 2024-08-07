@@ -7,10 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { UserDto } from '../../dtos/userDto';
 import DialogComponent from '../../components/common/DialogComponent';
 
-const AdminsPage = () => {
+const AuthorsPage = () => {
     const navigate = useNavigate();
-    const [admins, setAdmins] = useState<UserDto[]>();
-    const [filteredAdmins, setFilteredAdmins] = useState(admins);
+    const [users, setUsers] = useState<UserDto[]>();
+    const [filteredUsers, setFilteredUsers] = useState(users);
     const [searchText, setSearchText] = useState('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -21,8 +21,8 @@ const AdminsPage = () => {
 
 
     useEffect(() => {
-        const getAdmins = async () => {
-            const admins: UserDto[] = [
+        const getUsers = async () => {
+            const users: UserDto[] = [
                 { id: 1, fullName: 'John Doe', email: 'john@doe.com', jobTitle: 'Admin' },
                 { id: 2, fullName: 'Jane Doe', email: 'jane@doe.com', jobTitle: 'Admin' },
                 { id: 3, fullName: 'John Smith', email: 'john@smith.com', jobTitle: 'Admin' },
@@ -35,21 +35,20 @@ const AdminsPage = () => {
                 { id: 10, fullName: 'George Harris', email: 'george@harris.com', jobTitle: 'Admin' }
             ];
 
-            setAdmins(admins);
+            setUsers(users);
         }
-        getAdmins();
+        getUsers();
     }, []);
 
     useEffect(() => {
-        const filteredAdmins = admins?.filter((admin) => {
+        const filteredUsers = users?.filter((admin) => {
             const emailMatch = admin.email?.toLowerCase().includes(searchText.toLowerCase());
             const idMatch = admin.id?.toString().includes(searchText);
             const fullnameMatch = admin.fullName?.toLowerCase().includes(searchText.toLowerCase());
-            const jobTitleMatch = admin.jobTitle?.toLowerCase().includes(searchText.toLowerCase());
-            return emailMatch || idMatch || fullnameMatch || jobTitleMatch;
+            return emailMatch || idMatch || fullnameMatch;
         });
-        setFilteredAdmins(filteredAdmins);
-    }, [admins, searchText]);
+        setFilteredUsers(filteredUsers);
+    }, [users, searchText]);
 
     const handleSearch = (e: any) => setSearchText(e.target.value);
     const handleChangePage = (e: any, newPage: number) => setPage(newPage);
@@ -59,15 +58,15 @@ const AdminsPage = () => {
         setPage(0);
     };
 
-    const handleRevokeAuth = (user: UserDto) => {
+    const handleAuth = (user: UserDto) => {
         setOpenAlert(true);
-        setAlertText(`Are you sure you want to revoke authorization for user ${user?.fullName}?`);
+        setAlertText(`Are you sure you want to authorize ${user?.fullName}?`);
         setCurrentUser(user);
     }
 
     const handleConfirm = async () => {
         toast.dismiss();
-        toast.success(`Authorization revoked for user ${currentUser?.fullName}`);
+        toast.success(`Authorization granted for user ${currentUser?.fullName}`);
         setOpenAlert(false);
     }
 
@@ -75,19 +74,14 @@ const AdminsPage = () => {
         <Grid container spacing={3}>
             <Grid item xs={12} >
                 <Grid container>
-                    <Grid item xs={12} sm={9}>  <Typography variant='h4'>Admins</Typography> </Grid>
-                    <Grid item xs={12} sm={3} sx={{ pt: { xs: 2, sm: 0 } }}>
-                        <Button fullWidth variant="outlined" sx={{ fontWeight: 'bold' }}
-                            color="primary" onClick={() => navigate("/me/add-admin")}>
-                            Add New Admin
-                        </Button>
-                    </Grid>
+                    <Grid item xs={12} sm={9}>  <Typography variant='h4'>Users</Typography> </Grid>
+
                 </Grid>
             </Grid>
 
             <Grid item xs={12}>
                 <TextField
-                    label="Search by ID, Full Name, Email or Job Title"
+                    label="Search by ID, Full Name or Email"
                     variant="filled" value={searchText}
                     onChange={handleSearch} size="medium"
                     fullWidth
@@ -107,24 +101,31 @@ const AdminsPage = () => {
                                 <TableCell>ID</TableCell>
                                 <TableCell>Full Name</TableCell>
                                 <TableCell>Email</TableCell>
-                                <TableCell>Job Title</TableCell>
+                                <TableCell></TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                         </TableHead>
 
                         <TableBody>
-                            {filteredAdmins && filteredAdmins.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+                            {filteredUsers && filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                                 <TableRow key={user.id}>
                                     <TableCell>#{user.id}</TableCell>
                                     <TableCell>{user.fullName} </TableCell>
                                     <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.jobTitle}</TableCell>
                                     <TableCell>
-                                        <Button variant="outlined" color="warning"
-                                            onClick={() => handleRevokeAuth(user)}
+                                        <Button variant="outlined" color="inherit"
+                                            onClick={() => navigate(`/me/authors/${user.id}`)}
                                             style={{ borderRadius: "5rem" }}
                                         >
-                                            Revoke Authorization
+                                            View Profile
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button variant="outlined" color="success"
+                                            onClick={() => handleAuth(user)}
+                                            style={{ borderRadius: "5rem" }}
+                                        >
+                                            Authorize
                                         </Button>
                                     </TableCell>
                                 </TableRow>
@@ -132,10 +133,10 @@ const AdminsPage = () => {
                         </TableBody>
 
                     </Table>
-                    {filteredAdmins && <TablePagination
+                    {filteredUsers && <TablePagination
                         rowsPerPageOptions={[5, 10, 25]}
                         component="div"
-                        count={filteredAdmins.length}
+                        count={filteredUsers.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
@@ -156,4 +157,4 @@ const AdminsPage = () => {
     );
 };
 
-export default AdminsPage;
+export default AuthorsPage;

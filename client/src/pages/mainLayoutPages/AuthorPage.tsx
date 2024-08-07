@@ -34,6 +34,8 @@ const AuthorPage = () => {
       categoryId: 1, categoryName: 'Technology',
       authorId: 1, authorFullName: 'John Doe',
       authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png',
+      isDeleted: false,
+      isHidden: false,
     };
     setBlogs([blog, blog, blog, blog, blog, blog, blog, blog]);
   }, []);
