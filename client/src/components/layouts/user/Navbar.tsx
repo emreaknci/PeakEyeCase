@@ -21,6 +21,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import BookIcon from '@mui/icons-material/Book';
 import ThemeSwitcher from '../../common/ToggleThemeSwitch';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const drawerWidth = 240;
 
@@ -97,6 +99,11 @@ const userIconMap = [
   { name: 'My Blogs', icon: <BookIcon />, link: 'my-blogs' }
 ];
 
+const adminIconMap = [
+  { name: 'Dashboard', icon: <DashboardIcon />, link: 'dashboard' },
+  { name: 'Admins', icon: <SupervisorAccountIcon />, link: 'admins' }
+];
+
 
 const Navbar = () => {
   const theme = useTheme();
@@ -147,7 +154,7 @@ const Navbar = () => {
 
       <Divider />
       <List>
-        {userIconMap.map((item) => {
+        {adminIconMap.map((item) => {
           return (
             <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
@@ -174,6 +181,33 @@ const Navbar = () => {
         )}
       </List>
       <Divider />
+      <List>
+        {userIconMap.map((item) => {
+          return (
+            <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          )
+        }
+        )}
+      </List>
     </Drawer>
   )
 
@@ -188,6 +222,23 @@ const Navbar = () => {
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
+        <Divider />
+        <List>
+          {adminIconMap.map((item) => {
+            return (
+              <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }}>
+                  <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            )
+          }
+          )}
+        </List>
         <Divider />
         <List>
           {userIconMap.map((item) => {

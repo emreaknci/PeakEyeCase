@@ -19,7 +19,6 @@ export interface CustomTextFieldProps {
 
 const CustomTextFieldComponent = (props: CustomTextFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  console.log(props.formik)
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);

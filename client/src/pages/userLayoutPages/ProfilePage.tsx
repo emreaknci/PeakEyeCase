@@ -73,7 +73,7 @@ const ProfilePage = () => {
           {title}
         </Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6} sx={{ margin: 'auto' }} >
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3} textAlign={"center"} >
             {!editing ?
