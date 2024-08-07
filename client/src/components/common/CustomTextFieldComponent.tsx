@@ -26,7 +26,6 @@ const CustomTextFieldComponent = (props: CustomTextFieldProps) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    console.log(value)
     if (props.type === "number" && (props.fieldName === "unitOfStock" || props.fieldName === "price")) {
       const newValue = Math.max(parseInt(value), 0).toString();
       props.formik.setFieldValue(props.fieldName, newValue);

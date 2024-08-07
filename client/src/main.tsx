@@ -4,6 +4,7 @@ import './index.css'
 import { CustomThemeProvider } from './contexts/CustomThemeContext.tsx'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-quill/dist/quill.snow.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>

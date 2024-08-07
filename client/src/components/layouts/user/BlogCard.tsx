@@ -7,7 +7,8 @@ import CategoryButton from '../main/CategoryButton'
 
 export interface BlogCardProps {
     blog: BlogListDto,
-    handleDeleteBlog: (blog: BlogListDto) => void
+    isOwner: boolean,
+    handleDeleteBlog: (blog: BlogListDto) => void,
 }
 
 
@@ -34,12 +35,15 @@ const BlogCard = (props: BlogCardProps) => {
                 </Typography>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
-                    <Button variant="text" color="info" onClick={() => { navigate(`/author/${props.blog.authorId}`) }}>View Author</Button>
-                    <Button variant="text" color="info" onClick={() => { navigate(`/blog/${props.blog.id}`) }}>View Blog</Button>
+                    <Button variant="text" color="inherit" onClick={() => { navigate(`/author/${props.blog.authorId}`) }}>View Public Profile</Button>
+                    <Button variant="text" color="inherit" onClick={() => { navigate(`/blog/${props.blog.id}`) }}>View Blog</Button>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 1 }}>
+                    {props.isOwner && <>
+                        <Button variant="text" color="inherit" onClick={() => { navigate(`/me/edit-blog/${props.blog.id}`) }}>Edit </Button>
+                        <Button variant="text" color="warning" onClick={handleVisibilityChange}>Change Visibility</Button>
+                    </>}
                     <Button variant="text" color="error" onClick={() => props.handleDeleteBlog(props.blog)}>Delete</Button>
-                    <Button variant="text" color="warning" onClick={handleVisibilityChange}>Change Visibility</Button>
                 </Box>
 
                 <Box sx={{ marginTop: 1 }}>

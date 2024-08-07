@@ -94,7 +94,7 @@ const AuthorDetailPage = () => {
 
                 {blogs?.map((blog, i) => (
                     <Grid item sm={12} md={6} lg={4} xl={3} key={i}>
-                        <BlogCard blog={blog} handleDeleteBlog={handleDeleteBlog} />
+                        <BlogCard blog={blog} handleDeleteBlog={handleDeleteBlog} isOwner={false} />
                     </Grid>
                 ))}
             </Grid>
