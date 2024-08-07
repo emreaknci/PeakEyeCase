@@ -63,8 +63,11 @@ const AuthorDetailPage = () => {
     return (
         <>
             <Grid container spacing={3}>
+                <Grid item sm={12}>
+                    <Typography variant="h4">Author Informations</Typography>
+                </Grid>
                 <Grid item xs={12}>
-                    <Paper variant="outlined" sx={{ textAlign: 'center', px: { xl: 30, lg: 20, md: 10, sm: 5 }, py: 5,  borderRadius: 3 }}>
+                    <Paper variant="outlined" sx={{ textAlign: 'center', px: { xl: 30, lg: 20, md: 10, sm: 5 }, py: 5, borderRadius: 3 }}>
                         {author && (
                             <>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

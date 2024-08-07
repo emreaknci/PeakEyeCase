@@ -108,6 +108,7 @@ const Navbar = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
+                <MenuItem onClick={() => { navigate("/me") }}>My Profile</MenuItem>
                 <MenuItem onClick={() => { navigate("/sign-in") }}>Sign In</MenuItem>
                 <MenuItem onClick={() => { navigate("/sign-up") }}>Sign Up</MenuItem>
                 <MenuItem onClick={handleClose}>Logout </MenuItem>

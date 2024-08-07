@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  webapp:
+    container_name: c_webapp
+    ports:
+      - "3000:3000"
