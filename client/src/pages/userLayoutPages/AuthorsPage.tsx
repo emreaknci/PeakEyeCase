@@ -74,7 +74,7 @@ const AuthorsPage = () => {
         <Grid container spacing={3}>
             <Grid item xs={12} >
                 <Grid container>
-                    <Grid item xs={12} sm={9}>  <Typography variant='h4'>Users</Typography> </Grid>
+                    <Grid item xs={12} sm={9}>  <Typography variant='h4'>Authors</Typography> </Grid>
 
                 </Grid>
             </Grid>

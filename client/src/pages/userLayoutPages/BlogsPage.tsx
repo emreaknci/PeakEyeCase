@@ -3,11 +3,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Grid, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TablePagination, Menu, MenuItem, IconButton, Tooltip } from '@mui/material';
 import { toast } from 'react-toastify';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import DialogComponent from '../../components/common/DialogComponent';
 import { BlogListDto } from '../../dtos/blogs/blogListDto';
 import CategoryButton from '../../components/layouts/main/CategoryButton';
-import { AccountCircle } from '@mui/icons-material';
 
 const BlogsPage = () => {
     const navigate = useNavigate();
@@ -33,7 +32,8 @@ const BlogsPage = () => {
         setAnchorEl(null);
         setCurrentBlog(undefined);
     };
-    
+
+
     useEffect(() => {
         const getBlogs = async () => {
             const blogs: BlogListDto[] = [
@@ -173,6 +173,15 @@ const BlogsPage = () => {
         }
         getBlogs();
     }, []);
+
+    const [searchParams] = useSearchParams();
+    const category = searchParams.get('category');
+    const author = searchParams.get('author');
+
+    useEffect(() => {
+        if (category) setSearchText(category);
+        if (author) setSearchText(author);
+    }, [category, author])
 
     useEffect(() => {
         const filteredBlogs = blogs?.filter((blog) => {

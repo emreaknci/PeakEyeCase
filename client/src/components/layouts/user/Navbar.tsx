@@ -25,6 +25,10 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CommentIcon from '@mui/icons-material/Comment';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import CategoryIcon from '@mui/icons-material/Category';
+
+
+
 const drawerWidth = 240;
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -103,12 +107,11 @@ const userIconMap = [
 const adminIconMap = [
   { name: 'Dashboard', icon: <DashboardIcon />, link: 'dashboard' },
   { name: 'Admins', icon: <AdminPanelSettingsIcon />, link: 'admins' },
-  { name: 'Authors', icon: <SupervisorAccountIcon  />, link: 'authors' },
-  { name: 'Blogs', icon: <BorderColorIcon  />, link: 'blogs' },
-  { name: 'Comments', icon: <CommentIcon  />, link: 'comments' },
-
+  { name: 'Authors', icon: <SupervisorAccountIcon />, link: 'authors' },
+  { name: 'Blogs', icon: <BorderColorIcon />, link: 'blogs' },
+  { name: 'Comments', icon: <CommentIcon />, link: 'comments' },
+  { name: 'Categories', icon: <CategoryIcon />, link: 'categories' },
 ];
-
 
 const Navbar = () => {
   const theme = useTheme();
@@ -120,22 +123,12 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  const handleDrawerOpen = () => setOpen(true);
+  const handleDrawerClose = () => setOpen(false);
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const handleMenuClick = (event: any) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
 
-
-  const handleMenuClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
   const navigateTo = (page: string) => {
     navigate(page);
     handleDrawerClose();
@@ -190,28 +183,16 @@ const Navbar = () => {
         {userIconMap.map((item) => {
           return (
             <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
+              <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }} >
                 <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
+                  sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', }}>
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           )
-        }
-        )}
+        })}
       </List>
     </Drawer>
   )
