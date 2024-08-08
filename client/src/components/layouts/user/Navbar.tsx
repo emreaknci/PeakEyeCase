@@ -19,13 +19,12 @@ import { useState } from 'react';
 import { AccountCircle } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import BookIcon from '@mui/icons-material/Book';
 import ThemeSwitcher from '../../common/ToggleThemeSwitch';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 const drawerWidth = 240;
-
+import ArticleIcon from '@mui/icons-material/Article';
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {
@@ -96,13 +95,15 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const userIconMap = [
   { name: 'My Profile', icon: <AccountCircle />, link: '' },
-  { name: 'My Blogs', icon: <BookIcon />, link: 'my-blogs' }
+  { name: 'My Blogs', icon: <ArticleIcon />, link: 'my-blogs' }
 ];
 
 const adminIconMap = [
   { name: 'Dashboard', icon: <DashboardIcon />, link: 'dashboard' },
   { name: 'Admins', icon: <AdminPanelSettingsIcon />, link: 'admins' },
-  { name: 'Authors', icon: <SupervisorAccountIcon  />, link: 'authors' }
+  { name: 'Authors', icon: <SupervisorAccountIcon  />, link: 'authors' },
+  { name: 'Blogs', icon: <ArticleIcon  />, link: 'blogs' },
+
 ];
 
 

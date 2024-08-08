@@ -54,7 +54,7 @@ const MyBlogs = () => {
                         <Grid item xs={12} sm={9}>  <Typography variant='h4'>My Blogs</Typography> </Grid>
                         <Grid item xs={12} sm={3} sx={{ pt: { xs: 2, sm: 0 } }}>
                             <Button fullWidth variant="outlined" sx={{ fontWeight: 'bold' }}
-                                color="primary" onClick={() => navigate("/me/add-new-blog")}>
+                                color="primary" onClick={() => navigate("/me/my-blogs/add-new-blog")}>
                                 Add New Blog
                             </Button>
                         </Grid>

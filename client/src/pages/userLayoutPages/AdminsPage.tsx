@@ -78,7 +78,7 @@ const AdminsPage = () => {
                     <Grid item xs={12} sm={9}>  <Typography variant='h4'>Admins</Typography> </Grid>
                     <Grid item xs={12} sm={3} sx={{ pt: { xs: 2, sm: 0 } }}>
                         <Button fullWidth variant="outlined" sx={{ fontWeight: 'bold' }}
-                            color="primary" onClick={() => navigate("/me/add-admin")}>
+                            color="primary" onClick={() => navigate("/me/admins/add-admin")}>
                             Add New Admin
                         </Button>
                     </Grid>

@@ -40,7 +40,7 @@ const BlogCard = (props: BlogCardProps) => {
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 1 }}>
                     {props.isOwner && <>
-                        <Button variant="text" color="inherit" onClick={() => { navigate(`/me/edit-blog/${props.blog.id}`) }}>Edit </Button>
+                        <Button variant="text" color="inherit" onClick={() => { navigate(`/me/my-blogs/edit-blog/${props.blog.id}`) }}>Edit </Button>
                         <Button variant="text" color="warning" onClick={handleVisibilityChange}>Change Visibility</Button>
                     </>}
                     <Button variant="text" color="error" onClick={() => props.handleDeleteBlog(props.blog)}>Delete</Button>
