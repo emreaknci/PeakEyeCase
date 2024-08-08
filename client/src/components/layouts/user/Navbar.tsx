@@ -23,8 +23,9 @@ import ThemeSwitcher from '../../common/ToggleThemeSwitch';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import CommentIcon from '@mui/icons-material/Comment';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 const drawerWidth = 240;
-import ArticleIcon from '@mui/icons-material/Article';
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {
@@ -95,14 +96,16 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const userIconMap = [
   { name: 'My Profile', icon: <AccountCircle />, link: '' },
-  { name: 'My Blogs', icon: <ArticleIcon />, link: 'my-blogs' }
+  { name: 'My Blogs', icon: <BorderColorIcon />, link: 'my-blogs' },
+  { name: 'My Comments', icon: <CommentIcon />, link: 'my-comments' }
 ];
 
 const adminIconMap = [
   { name: 'Dashboard', icon: <DashboardIcon />, link: 'dashboard' },
   { name: 'Admins', icon: <AdminPanelSettingsIcon />, link: 'admins' },
   { name: 'Authors', icon: <SupervisorAccountIcon  />, link: 'authors' },
-  { name: 'Blogs', icon: <ArticleIcon  />, link: 'blogs' },
+  { name: 'Blogs', icon: <BorderColorIcon  />, link: 'blogs' },
+  { name: 'Comments', icon: <CommentIcon  />, link: 'comments' },
 
 ];
 

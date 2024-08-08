@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Paper, Typography } from '@mui/material'
-import { UserDto } from '../../dtos/userDto'
+import { UserDto } from '../../dtos/users/userDto'
 import { useEffect, useState } from 'react'
 import * as Yup from 'yup';
 import { useFormik } from 'formik';

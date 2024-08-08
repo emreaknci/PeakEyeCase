@@ -1,6 +1,6 @@
 import { Card, CardMedia, CardContent, Typography, Button, Box } from '@mui/material'
 import { useContext } from 'react'
-import { BlogListDto } from '../../../dtos/blogListDto'
+import { BlogListDto } from '../../../dtos/blogs/blogListDto'
 import { CustomThemeContext } from '../../../contexts/CustomThemeContext'
 import CategoryButton from './CategoryButton'
 import { useNavigate } from 'react-router-dom'

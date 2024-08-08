@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { BlogDetailDto } from '../../dtos/blogDetailDto';
+import { BlogDetailDto } from '../../dtos/blogs/blogDetailDto';
 import Loading from '../../components/common/Loading';
-import { Box, CardMedia, Grid, Typography } from '@mui/material';
+import { Box, CardMedia, Divider, Grid, Typography } from '@mui/material';
 import CategoryButton from '../../components/layouts/main/CategoryButton';
+import Comments from '../../components/layouts/main/Comments';
 
 const BlogDetailPage = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,9 @@ const BlogDetailPage = () => {
       createdAt: new Date(),
       categoryId: 1, categoryName: 'Technology',
       authorId: 1, authorFullName: 'John Doe',
-      content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt.'
+      content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt. Lorem ipsum dolor sit amet consectetur adipisicing elit Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt.',
+      isDeleted: false,
+      isHidden: false
     })
 
   }
@@ -85,6 +88,10 @@ const BlogDetailPage = () => {
                  </div>` }}>
               </Typography>
 
+            </Grid>
+            <Grid item xs={12}> <Divider /><br /></Grid>
+            <Grid item xs={12}>
+              <Comments blogId={blog.id} />
             </Grid>
           </Grid>
           }

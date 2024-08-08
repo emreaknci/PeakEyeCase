@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { AuthorDetailDto } from '../../dtos/authorDetailDto';
-import { BlogListDto } from '../../dtos/blogListDto';
-import { Grid, Paper, Typography, Avatar, IconButton } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AuthorDetailDto } from '../../dtos/users/authorDetailDto';
+import { BlogListDto } from '../../dtos/blogs/blogListDto';
+import { Grid, Paper, Typography, Avatar, IconButton, Button } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import BlogList from '../../components/layouts/main/BlogList';
@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 const AuthorDetailPage = () => {
     const { id } = useParams();
 
+    const navigate = useNavigate();
     const [author, setAuthor] = useState<AuthorDetailDto | null>(null);
     const [blogs, setBlogs] = useState<BlogListDto[] | null>(null);
     const [openAlert, setOpenAlert] = useState(false);
@@ -91,8 +92,14 @@ const AuthorDetailPage = () => {
                     </Paper>
                 </Grid>
 
-                <Grid item sm={12}>
-                    <Typography variant="h4">Blogs</Typography>
+                <Grid item sm={9}>
+                    <Typography variant="h5">Blogs</Typography>
+                </Grid>
+                <Grid item sm={3} textAlign={"end"}>
+                    <Typography sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                        variant="h5" onClick={() => navigate(`/me/authors/${author?.fullName}/comments`)}>
+                        View Comments
+                    </Typography>
                 </Grid>
 
                 {blogs?.map((blog, i) => (

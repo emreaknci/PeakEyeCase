@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { Box, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material'
-import { BlogListDto } from '../../dtos/blogListDto'
+import { BlogListDto } from '../../dtos/blogs/blogListDto'
 import Loading from '../../components/common/Loading'
 import AdsComponent from '../../components/common/AdsComponent'
 import { CustomThemeContext } from '../../contexts/CustomThemeContext'

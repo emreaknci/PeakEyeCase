@@ -5,9 +5,9 @@ import { Grid, Paper, Typography, Button, Select, MenuItem } from '@mui/material
 
 import { toast } from 'react-toastify';
 import CustomTextFieldComponent from '../../components/common/CustomTextFieldComponent';
-import { UserDto } from '../../dtos/userDto';
+import { UserDto } from '../../dtos/users/userDto';
 import { Role } from '../../models/role';
-import { SignUpDto } from '../../dtos/signUpDto';
+import { SignUpDto } from '../../dtos/users/signUpDto';
 
 
 const validationSchema = Yup.object({

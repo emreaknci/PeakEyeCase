@@ -9,8 +9,8 @@ import CustomTextFieldComponent from '../../components/common/CustomTextFieldCom
 import ImagePickerComponent from '../../components/common/ImagePickerComponent';
 import ReactQuill from 'react-quill';
 import { Label } from '@mui/icons-material';
-import { BlogEditDto } from '../../dtos/blogEditDto';
-import { BlogDetailDto } from '../../dtos/blogDetailDto';
+import { BlogEditDto } from '../../dtos/blogs/blogEditDto';
+import { BlogDetailDto } from '../../dtos/blogs/blogDetailDto';
 
 
 const validationSchema = Yup.object({

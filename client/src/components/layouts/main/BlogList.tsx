@@ -1,5 +1,5 @@
 import React from 'react'
-import { BlogListDto } from '../../../dtos/blogListDto';
+import { BlogListDto } from '../../../dtos/blogs/blogListDto';
 import { Grid, Typography } from '@mui/material';
 import LoadMoreButton from '../../common/LoadMoreButton';
 import BlogCard from './BlogCard';

@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Grid, Typography, Button, Box } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CustomTextFieldComponent from '../../components/common/CustomTextFieldComponent';
-import { SignUpDto } from '../../dtos/signUpDto';
+import { SignUpDto } from '../../dtos/users/signUpDto';
 import { Link as MuiLink } from '@mui/material';
-import { SignInDto } from '../../dtos/signInDto';
+import { SignInDto } from '../../dtos/users/signInDto';
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Email is invalid').required('Email is required'),

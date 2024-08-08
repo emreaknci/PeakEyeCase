@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { AuthorDetailDto } from '../../dtos/authorDetailDto';
-import { BlogListDto } from '../../dtos/blogListDto';
+import { AuthorDetailDto } from '../../dtos/users/authorDetailDto';
+import { BlogListDto } from '../../dtos/blogs/blogListDto';
 import { Grid, Paper, Typography, Avatar, IconButton } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';

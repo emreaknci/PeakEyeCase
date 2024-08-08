@@ -4,7 +4,7 @@ import { Grid, TextField, Typography, Table, TableBody, TableCell, TableContaine
 import { toast } from 'react-toastify';
 
 import { useNavigate } from 'react-router-dom';
-import { UserDto } from '../../dtos/userDto';
+import { UserDto } from '../../dtos/users/userDto';
 import DialogComponent from '../../components/common/DialogComponent';
 
 const AuthorsPage = () => {

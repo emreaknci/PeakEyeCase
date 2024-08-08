@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 import { useNavigate } from 'react-router-dom';
 import DialogComponent from '../../components/common/DialogComponent';
-import { BlogListDto } from '../../dtos/blogListDto';
+import { BlogListDto } from '../../dtos/blogs/blogListDto';
 import CategoryButton from '../../components/layouts/main/CategoryButton';
 import { AccountCircle } from '@mui/icons-material';
 

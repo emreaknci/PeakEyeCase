@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardContent, CardMedia, Paper, Typography } from '@mui/material'
-import { BlogListDto } from '../../../dtos/blogListDto'
+import { BlogListDto } from '../../../dtos/blogs/blogListDto'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import CategoryButton from '../main/CategoryButton'

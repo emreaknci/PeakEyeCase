@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BlogListDto } from '../../dtos/blogListDto'
+import { BlogListDto } from '../../dtos/blogs/blogListDto'
 import BlogCard from '../../components/layouts/user/BlogCard'
 import { Button, Grid, Typography } from '@mui/material'
 import DialogComponent from '../../components/common/DialogComponent'

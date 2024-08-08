@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Grid, Typography, Button, Box } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CustomTextFieldComponent from '../../components/common/CustomTextFieldComponent';
-import { SignUpDto } from '../../dtos/signUpDto';
+import { SignUpDto } from '../../dtos/users/signUpDto';
 import { Link as MuiLink } from '@mui/material';
 
 const validationSchema = Yup.object({

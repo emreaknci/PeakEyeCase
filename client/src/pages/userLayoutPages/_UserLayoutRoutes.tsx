@@ -10,6 +10,8 @@ import AuthorDetailPage from './AuthorDetailPage'
 import AddNewBlogPage from './AddNewBlog'
 import EditBlogPage from './EditBlogPage'
 import BlogsPage from './BlogsPage'
+import CommentsPage from './CommentsPage'
+import MyComments from './MyComments'
 
 const UserLayoutRoutes = () => {
   return (
@@ -20,6 +22,7 @@ const UserLayoutRoutes = () => {
           <Route path="/" element={<ProfilePage />} />
           <Route path="/my-profile" element={<ProfilePage />} />
           <Route path="/my-blogs" element={<MyBlogs />} />
+          <Route path="/my-comments" element={<MyComments />} />
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/my-blogs/add-new-blog" element={<AddNewBlogPage />} />
           <Route path="/my-blogs/edit-blog/:id" element={<EditBlogPage />} />
@@ -27,6 +30,8 @@ const UserLayoutRoutes = () => {
           <Route path="/admins/add-admin" element={<AddNewAdminPage />} />
           <Route path="/authors" element={<AuthorsPage />} />
           <Route path="/authors/:id" element={<AuthorDetailPage />} />
+          <Route path="/authors/:name/comments" element={<CommentsPage />} />
+          <Route path="/comments" element={<CommentsPage />} />
 
           <Route path="*" element={<Navigate to={"/me"} />} />
         </Routes>
