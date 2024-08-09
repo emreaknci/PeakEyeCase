@@ -47,7 +47,7 @@ func (a *authService) SignIn(dto user_dto.SignInDto) response.CustomResponse {
 		return response.CustomResponse{Status: false, Message: "Password is incorrect.", StatusCode: 401}
 	}
 
-	token, err := jwt.GenerateToken(strconv.FormatUint(uint64(user.Id), 10))
+	token, err := jwt.GenerateToken(strconv.FormatUint(uint64(user.Id), 10),user.Role.Value())
 	if err != nil {
 		return response.CustomResponse{Status: false, Message: "An error occurred while generating token", Error: err.Error(), StatusCode: 500}
 	}

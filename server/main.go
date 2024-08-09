@@ -24,6 +24,8 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Use()
+
 	container := config.AddService(db)
 	route.RegisterRoutes(container, router)
 

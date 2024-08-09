@@ -18,3 +18,7 @@ func (r Role) String() string {
 		return "Author"
 	}
 }
+
+func (r Role) Value() int {
+	return int(r)
+}

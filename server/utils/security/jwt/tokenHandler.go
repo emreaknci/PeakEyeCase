@@ -9,12 +9,13 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateToken(userID string) (string, error) {
+func GenerateToken(userID string, role int) (string, error) {
 	secretKey := os.Getenv("JWT_SECRET_KEY")
 	expirationTime := time.Now().Add(time.Duration(getExpirationTime()) * time.Second)
 
 	claims := &TokenClaims{
 		UserID: userID,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
