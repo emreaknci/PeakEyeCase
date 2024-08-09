@@ -24,7 +24,8 @@ func main() {
 	}
 
 	router := gin.Default()
-	route.RegisterRoutes(db, router)
+	container := config.AddService(db)
+	route.RegisterRoutes(container, router)
 
 	router.Run(":8080")
 }

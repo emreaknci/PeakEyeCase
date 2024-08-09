@@ -2,17 +2,17 @@ package route
 
 import (
 	"github.com/emreaknci/peakeyecase/server/controller"
-	"github.com/emreaknci/peakeyecase/server/repository"
-	"github.com/emreaknci/peakeyecase/server/service"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"go.uber.org/dig"
 )
 
-func AuthRoutes(db *gorm.DB, router *gin.Engine) {
-	repo := repository.NewUserRepository(db)
-	service := service.NewAuthService(repo)
-	controller := controller.NewAuthController(service)
+func AuthRoutes(container *dig.Container, router *gin.Engine) {
+	err := container.Invoke(func(authController controller.AuthController) {
+		router.POST("/auth/sign-up", authController.SignUp)
+		router.POST("/auth/sign-in", authController.SignIn)
+	})
 
-	router.POST("/auth/sign-up", controller.SignUp)
-	router.POST("/auth/sign-in", controller.SignIn)
+	if err != nil {
+		panic(err)
+	}
 }
