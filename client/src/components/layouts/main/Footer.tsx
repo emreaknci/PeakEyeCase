@@ -116,7 +116,7 @@ const Footer = () => {
         <Grid container justifyContent="space-between" alignItems="center">
           <Grid item>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-              <img src="logo.png" alt="logo" style={{ height: 30, marginRight: 8 }} />
+              <img src="/logo.png" alt="logo" style={{ height: 30, marginRight: 8 }} />
               <span>PeakEye <b> Blog</b></span>
             </Typography>
           </Grid>

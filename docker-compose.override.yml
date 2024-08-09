@@ -1,7 +1,27 @@
-version: '3.8'
+version: '3.4'
 
 services:
+  webapi:
+    container_name: c_webapi
+    ports:
+      - "5000:8080"
+    depends_on:
+      - db
+    env_file:
+      - ./server/.env
+
   webapp:
     container_name: c_webapp
     ports:
       - "3000:3000"
+
+  db:
+    container_name: c_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: peakeye1!
+      POSTGRES_DB: PeakEyeCaseDb
+    ports:
+      - "5454:5432"
+    volumes:
+      - db_volume:/var/lib/postgresql/data

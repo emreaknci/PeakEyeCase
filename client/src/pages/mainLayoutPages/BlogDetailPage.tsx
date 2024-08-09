@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BlogDetailDto } from '../../dtos/blogs/blogDetailDto';
 import Loading from '../../components/common/Loading';
 import { Box, CardMedia, Divider, Grid, Typography } from '@mui/material';
@@ -7,6 +7,7 @@ import CategoryButton from '../../components/layouts/main/CategoryButton';
 import Comments from '../../components/layouts/main/Comments';
 
 const BlogDetailPage = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [blog, setBlog] = useState<BlogDetailDto | null>(null);
   const { id } = useParams();
@@ -45,10 +46,17 @@ const BlogDetailPage = () => {
             </Grid>
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, flexDirection: "row" }}>
-                <CardMedia component="img" image={blog.imageUri}
-                  sx={{ width: 40, height: 40, borderRadius: '50%', mb: { xs: 1, sm: 0 }, mr: { sm: 2 } }}
+                <CardMedia component="img" image={blog.imageUri} onClick={() => navigate(`/author/${blog.authorId}`)}
+                  sx={{ width: 40, height: 40, borderRadius: '50%', mb: { xs: 1, sm: 0 }, mr: { sm: 2 },cursor: 'pointer', }}
                 />
-                <Typography variant="body2" color="text.primary" sx={{ flexGrow: 1, textAlign: { xs: 'center', sm: 'left' } }}>
+                <Typography variant="body2" color="text.primary"
+                  sx={{
+                    flexGrow: 1,
+                    cursor: 'pointer',
+                    textAlign: { xs: 'center', sm: 'left' }
+                  }}
+                  onClick={() => navigate(`/author/${blog.authorId}`)}
+                >
                   {blog.authorFullName}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">

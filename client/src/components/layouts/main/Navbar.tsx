@@ -69,7 +69,7 @@ const Navbar = () => {
               </IconButton>
             )}
             <Typography variant="h6" component="div" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', cursor: "pointer" }} onClick={() => { navigate("/") }}>
-              <img src="logo.png" alt="logo" style={{ height: 40, marginRight: 8 }} />
+              <img src="/logo.png" alt="logo" style={{ height: 40, marginRight: 8 }} />
               <span>PeakEye <b> Blog</b></span>
             </Typography>
 

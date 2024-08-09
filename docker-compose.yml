@@ -1,11 +1,20 @@
-version: '3.8'
+version: '3.4'
 
 services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+
   webapp:
     image: ${DOCKER_REGISTRY-}webapp
     build:
       context: ./client
       dockerfile: ./Dockerfile
+
+  db:
+    image: postgres:latest
 
 volumes:
   db_volume:
