@@ -7,7 +7,7 @@ import (
 
 type UserRepository interface {
 	BaseRepository[model.User]
-	GetByEmail(email string) (*model.User, error)
+	GetByEmail(email string) (model.User, error)
 }
 
 type userRepository struct {
@@ -20,12 +20,12 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
-func (r *userRepository) GetByEmail(email string) (*model.User, error) {
+func (r *userRepository) GetByEmail(email string) (model.User, error) {
 	var user model.User
 
 	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
-		return nil, err
+		return model.User{}, err
 	}
 
-	return &user, nil
+	return user, nil
 }
