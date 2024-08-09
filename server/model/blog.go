@@ -5,5 +5,9 @@ type Blog struct {
 	Title      string   `json:"title"`
 	Content    string   `json:"content"`
 	CategoryID uint     `json:"categoryId"`
-	Category   Category `json:"category"`
+	Category   Category `json:"-"`
+	IsHidden   bool     `json:"isHidden"`
+	UserId     uint     `json:"authorId"`
+	User       User     `json:"-"`
+	ImageUri   string   `json:"imageUri"`
 }
