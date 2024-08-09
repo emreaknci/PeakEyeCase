@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	user_dto "github.com/emreaknci/peakeyecase/server/dto/user"
-	"github.com/emreaknci/peakeyecase/server/model"
 	"github.com/emreaknci/peakeyecase/server/repository"
 	"github.com/emreaknci/peakeyecase/server/utils/response"
 	"github.com/emreaknci/peakeyecase/server/utils/security/hashing"
@@ -36,13 +35,10 @@ func (a *authService) SignIn(dto user_dto.SignInDto) response.CustomResponse {
 		return response.CustomResponse{Status: false, Message: "Validation error occurred", Error: err.Error(), StatusCode: 400}
 	}
 
-	user, err := a.repo.GetByFilter(func(user model.User) bool {
-		return user.Email == dto.Email
-	})
-
+	user, err := a.repo.GetByEmail(dto.Email)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return response.CustomResponse{Status: false, Message: "User not found.", StatusCode: 404}
+			return response.CustomResponse{Status: true, Message: "User not found.", StatusCode: 404}
 		}
 		return response.CustomResponse{Status: false, Message: "An error occurred while checking user", Error: err.Error(), StatusCode: 500}
 	}
@@ -67,16 +63,14 @@ func (a *authService) SignUp(dto user_dto.SignUpDto) response.CustomResponse {
 		return response.CustomResponse{Status: false, Message: "Validation error occurred", Error: err.Error(), StatusCode: 400}
 	}
 
-	_, err = a.repo.GetByFilter(func(user model.User) bool {
-		return user.Email == dto.Email
-	})
+	user, err := a.repo.GetByEmail(dto.Email)
 
-	if err == nil {
-		return response.CustomResponse{Status: false, Message: "This email is already in use.", StatusCode: 400}
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return response.CustomResponse{Status: false, Message: "An error occurred while checking user", Error: err.Error(), StatusCode: 500}
 	}
 
-	if err != gorm.ErrRecordNotFound {
-		return response.CustomResponse{Status: false, Message: "An error occurred while checking user", Error: err.Error(), StatusCode: 500}
+	if user != nil {
+		return response.CustomResponse{Status: false, Message: "This email is already in use.", StatusCode: 409}
 	}
 
 	hashedPassword, err := hashing.HashPassword(dto.Password)
