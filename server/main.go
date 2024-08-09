@@ -24,7 +24,8 @@ func main() {
 	}
 
 	router := gin.Default()
-	router.Use()
+
+	router.Static("/images", "./uploads")
 
 	container := config.AddService(db)
 	route.RegisterRoutes(container, router)
@@ -37,5 +38,4 @@ func loadEnv() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
 }
