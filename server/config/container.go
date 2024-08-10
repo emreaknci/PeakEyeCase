@@ -10,9 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var validate = validator.New()
-
-func AddService(db *gorm.DB) *dig.Container {
+func RegisterServices(db *gorm.DB) *dig.Container {
 	container := dig.New()
 
 	err := container.Provide(func() *gorm.DB {
@@ -21,14 +19,21 @@ func AddService(db *gorm.DB) *dig.Container {
 	if err != nil {
 		panic(err)
 	}
-	validate = validator.New()
 
-	addUserAndAuthServices(container)
+	err = container.Provide(func() *validator.Validate {
+		return validator.New()
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	registerUserAndAuthServices(container)
+	registerBlogServices(container)
 
 	return container
 }
 
-func addUserAndAuthServices(container *dig.Container) {
+func registerUserAndAuthServices(container *dig.Container) {
 
 	err := container.Provide(func(db *gorm.DB) repository.UserRepository {
 		return repository.NewUserRepository(db)
@@ -37,14 +42,14 @@ func addUserAndAuthServices(container *dig.Container) {
 		panic(err)
 	}
 
-	err = container.Provide(func(repo repository.UserRepository) service.AuthService {
+	err = container.Provide(func(repo repository.UserRepository, validate *validator.Validate) service.AuthService {
 		return service.NewAuthService(repo, validate)
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	err = container.Provide(func(repo repository.UserRepository) service.UserService {
+	err = container.Provide(func(repo repository.UserRepository, validate *validator.Validate) service.UserService {
 		return service.NewUserService(repo, validate)
 	})
 	if err != nil {
@@ -60,6 +65,31 @@ func addUserAndAuthServices(container *dig.Container) {
 
 	err = container.Provide(func(userService service.UserService) controller.UserController {
 		return controller.NewUserController(userService)
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func registerBlogServices(container *dig.Container) {
+
+	err := container.Provide(func(db *gorm.DB) repository.BlogRepository {
+		return repository.NewBlogRepository(db)
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = container.Provide(func(repo repository.BlogRepository, validate *validator.Validate) service.BlogService {
+		return service.NewBlogService(repo, validate)
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = container.Provide(func(blogService service.BlogService) controller.BlogController {
+		return controller.NewBlogController(blogService)
 	})
 	if err != nil {
 		panic(err)

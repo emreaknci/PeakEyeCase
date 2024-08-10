@@ -6,15 +6,18 @@ services:
     build:
       context: ./server
       dockerfile: ./Dockerfile
+    restart: always
 
   webapp:
     image: ${DOCKER_REGISTRY-}webapp
     build:
       context: ./client
       dockerfile: ./Dockerfile
+    restart: always
 
   db:
     image: postgres:latest
+    restart: always
 
 volumes:
   db_volume:

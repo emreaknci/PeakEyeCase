@@ -35,7 +35,7 @@ func UploadFile(file multipart.File, fileHeader *multipart.FileHeader) response.
 		return response.CustomResponse{Message: "File could not be written", Error: "Internal Server Error", StatusCode: http.StatusInternalServerError, Status: false}
 	}
 
-	return response.CustomResponse{Message: "File uploaded successfully", Data: filePath, StatusCode: http.StatusOK, Status: true}
+	return response.CustomResponse{Message: "File uploaded successfully", Data: fileName, StatusCode: http.StatusOK, Status: true}
 }
 
 func DeleteFile(fileName string) response.CustomResponse {
@@ -43,13 +43,13 @@ func DeleteFile(fileName string) response.CustomResponse {
 
 	if err := os.Remove(filePath); err != nil {
 		if os.IsNotExist(err) {
-			return response.CustomResponse{Message: "File not found", Error: "Not Found", StatusCode: http.StatusNotFound}
+			return response.CustomResponse{Message: fmt.Sprintf("File could not be found with name: %s", fileName), Error: "Not Found", StatusCode: http.StatusNotFound}
 		} else {
 			return response.CustomResponse{Message: "File could not be deleted", Error: "Internal Server Error", StatusCode: http.StatusInternalServerError}
 		}
 
 	}
 
-	return response.CustomResponse{Message: "File deleted successfully", StatusCode: http.StatusOK}
+	return response.CustomResponse{Message: "File deleted successfully", StatusCode: http.StatusOK, Status: true}
 
 }

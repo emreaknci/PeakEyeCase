@@ -1,8 +1,8 @@
 package blog_dto
 
 type BlogEditDto struct {
-	Id         uint   `json:"id"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	CategoryId uint   `json:"categoryId"`
+	Id         uint   `json:"id" validate:"required"`
+	Title      string `json:"title" validate:"required"`
+	Content    string `json:"content" validate:"required"`
+	CategoryId uint   `json:"categoryId" validate:"required"`
 }

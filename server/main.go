@@ -27,7 +27,7 @@ func main() {
 
 	router.Static("/images", "./uploads")
 
-	container := config.AddService(db)
+	container := config.RegisterServices(db)
 	route.RegisterRoutes(container, router)
 
 	router.Run(":8080")
