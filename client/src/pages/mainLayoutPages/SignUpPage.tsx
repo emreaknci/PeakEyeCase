@@ -7,6 +7,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CustomTextFieldComponent from '../../components/common/CustomTextFieldComponent';
 import { SignUpDto } from '../../dtos/users/signUpDto';
 import { Link as MuiLink } from '@mui/material';
+import AuthService from '../../services/auth.service';
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required('Full Name is required'),
@@ -25,13 +26,13 @@ const SignUpPage = () => {
 
   const formik = useFormik({
     initialValues: {
-      fullName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      jobTitle: '',
-      about: '',
-    },
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      jobTitle: "",
+      about: ""
+  },
     validationSchema,
     onSubmit: async (values) => {
       setSubmitted(true);
@@ -48,6 +49,13 @@ const SignUpPage = () => {
       jobTitle: formik.values.jobTitle,
       about: formik.values.about,
     };
+
+    await AuthService.signUp(signUpDto).then((response) => {
+      console.log(response);
+    }).catch((error) => {
+      console.log(error);
+    });
+
 
     console.log(signUpDto);
   }

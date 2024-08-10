@@ -1,11 +1,10 @@
+import { BaseModel } from "./baseModel";
 import { Role } from "./role";
 
-export interface User {
-    id: number;
+export interface User extends BaseModel {
     fullName: string;
     jobTitle: string;
     email: string;
-    imageUri: string;
     role: Role;
     about?: string;
 }

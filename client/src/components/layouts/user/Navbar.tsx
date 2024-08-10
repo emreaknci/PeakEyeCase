@@ -15,7 +15,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Menu, MenuItem, SwipeableDrawer, Tooltip, useMediaQuery } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { AccountCircle } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -26,6 +26,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import CommentIcon from '@mui/icons-material/Comment';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CategoryIcon from '@mui/icons-material/Category';
+import { AuthContext } from '../../../contexts/AuthContext';
 
 
 
@@ -114,6 +115,8 @@ const adminIconMap = [
 ];
 
 const Navbar = () => {
+  const authContext = useContext(AuthContext);
+
   const theme = useTheme();
 
   const [open, setOpen] = React.useState(false);
@@ -135,67 +138,70 @@ const Navbar = () => {
   }
 
   const handleLogout = () => {
-    // authContext.logout();
+    authContext.logout();
     handleMenuClose();
     navigate("/");
     toast.success("Logged out successfully.");
   }
 
-  const largeScreenDrawer = (
-    <Drawer variant="permanent" open={open}>
-      <DrawerHeader>
-        <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-        </IconButton>
-      </DrawerHeader>
-      <Divider />
+  const largeScreenDrawer = () => {
 
-      <Divider />
-      <List>
-        {adminIconMap.map((item) => {
-          return (
-            <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+    return (
+      <Drawer variant="permanent" open={open}>
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+
+        <Divider />
+        {authContext.isAdmin && <List>
+          {adminIconMap.map((item) => {
+            return (
+              <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          )
-        }
-        )}
-      </List>
-      <Divider />
-      <List>
-        {userIconMap.map((item) => {
-          return (
-            <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }} >
-                <ListItemIcon
-                  sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          )
-        })}
-      </List>
-    </Drawer>
-  )
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            )
+          }
+          )}
+        </List>}
+        <Divider />
+        <List>
+          {userIconMap.map((item) => {
+            return (
+              <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
+                <ListItemButton sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5, }} >
+                  <ListItemIcon
+                    sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center', }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.name} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            )
+          })}
+        </List>
+      </Drawer>
+    )
+  }
 
   const smallScreenDrawer = () => {
     const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -209,7 +215,7 @@ const Navbar = () => {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
+        {authContext.isAdmin && <List>
           {adminIconMap.map((item) => {
             return (
               <ListItem onClick={() => navigateTo(item.link)} key={item.name} disablePadding sx={{ display: 'block' }}>
@@ -224,7 +230,7 @@ const Navbar = () => {
             )
           }
           )}
-        </List>
+        </List>}
         <Divider />
         <List>
           {userIconMap.map((item) => {
@@ -242,7 +248,6 @@ const Navbar = () => {
           }
           )}
         </List>
-        <Divider />
       </SwipeableDrawer >
     )
   }
@@ -285,7 +290,7 @@ const Navbar = () => {
       </AppBar>
 
 
-      {isSmallScreen ? smallScreenDrawer() : largeScreenDrawer}
+      {isSmallScreen ? smallScreenDrawer() : largeScreenDrawer()}
     </>
   );
 }

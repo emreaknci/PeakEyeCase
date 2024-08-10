@@ -6,6 +6,7 @@ import { CustomThemeContext } from '../../../contexts/CustomThemeContext';
 import { Link, useNavigate } from 'react-router-dom';
 import ThemeSwitcher from '../../common/ToggleThemeSwitch';
 import { AccountCircle } from '@mui/icons-material';
+import { AuthContext } from '../../../contexts/AuthContext';
 
 const NavigationButtons = () => (
   <Box sx={{
@@ -40,6 +41,7 @@ const MediumScreenAppBar = ({ isMediumScreen, handleDrawerToggle }: { isMediumSc
 );
 
 const Navbar = () => {
+  const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [isMediumScreen, setIsMediumScreen] = React.useState(false);
@@ -105,10 +107,14 @@ const Navbar = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={() => { navigate("/me") }}>My Profile</MenuItem>
-                <MenuItem onClick={() => { navigate("/sign-in") }}>Sign In</MenuItem>
-                <MenuItem onClick={() => { navigate("/sign-up") }}>Sign Up</MenuItem>
-                <MenuItem onClick={handleClose}>Logout </MenuItem>
+                {authContext.isAuthenticated ? <>
+                  <MenuItem onClick={() => { navigate("/me") }}>My Profile</MenuItem>
+                  <MenuItem onClick={() => authContext.logout()}>Logout </MenuItem>
+                </> :
+                  <>
+                    <MenuItem onClick={() => { navigate("/sign-in") }}>Sign In</MenuItem>
+                    <MenuItem onClick={() => { navigate("/sign-up") }}>Sign Up</MenuItem>
+                  </>}
               </Menu>
             </Box>
           </Toolbar>

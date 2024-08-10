@@ -5,5 +5,5 @@ export interface CommentDto {
     authorId: number;
     authorFullName: string;
     blogId: number;
-    blogTitle: string;
+    blogTitle?: string;
 }

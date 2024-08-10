@@ -1,6 +1,6 @@
 import Navbar from '../../components/layouts/user/Navbar'
 import { Box } from '@mui/material'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import ProfilePage from './ProfilePage'
 import MyBlogs from './MyBlogs'
 import AdminsPage from './AdminsPage'
@@ -13,24 +13,31 @@ import BlogsPage from './BlogsPage'
 import CommentsPage from './CommentsPage'
 import MyComments from './MyComments'
 import CategoriesPage from './CategoriesPage'
+import { useContext } from 'react'
+import { AuthContext } from '../../contexts/AuthContext'
+
 
 const UserLayoutRoutes = () => {
+  const authContext = useContext(AuthContext);
   return (
     <Box sx={{ display: 'flex' }}>
       <Navbar />
       <Box component="main" sx={{ flexGrow: 1, p: { xs: 3, md: 3 }, pt: { xs: 10, md: 10 } }}>
         <Routes>
+          {authContext.isAuthenticated && authContext.isAdmin && <>
+            <Route path="/admins" element={<AdminsPage />} />
+            <Route path="/admins/add-admin" element={<AddNewAdminPage />} />
+            <Route path="/authors" element={<AuthorsPage />} />
+            <Route path="/authors/:id" element={<AuthorDetailPage />} />
+            <Route path="/authors/:name/comments" element={<CommentsPage />} />
+            <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blogs?category=:category" element={<BlogsPage />} />
+            <Route path="/blogs?author=:author" element={<BlogsPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/comments" element={<CommentsPage />} />
+          </>
+          }
           <Route path="/" element={<ProfilePage />} />
-          <Route path="/admins" element={<AdminsPage />} />
-          <Route path="/admins/add-admin" element={<AddNewAdminPage />} />
-          <Route path="/authors" element={<AuthorsPage />} />
-          <Route path="/authors/:id" element={<AuthorDetailPage />} />
-          <Route path="/authors/:name/comments" element={<CommentsPage />} />
-          <Route path="/blogs" element={<BlogsPage />} />
-          <Route path="/blogs?category=:category" element={<BlogsPage />} />
-          <Route path="/blogs?author=:author" element={<BlogsPage />} />
-          <Route path="/categories" element={<CategoriesPage />} />
-          <Route path="/comments" element={<CommentsPage />} />
           <Route path="/my-blogs" element={<MyBlogs />} />
           <Route path="/my-blogs/add-new-blog" element={<AddNewBlogPage />} />
           <Route path="/my-blogs/edit-blog/:id" element={<EditBlogPage />} />

@@ -1,16 +1,10 @@
-import { Category } from "./category";
-import { User } from "./user";
+import { BaseModel } from "./baseModel";
 
-export interface Blog {
-    id: number;
+export interface Blog extends BaseModel {
     title: string;
     content: string;
     categoryId: number;
-    category: Category;
-    createdAt: Date;
     imageUri: string;
-    author: User;
     authorId: number;
-    isDeleted: boolean;
     isHidden: boolean;
 }

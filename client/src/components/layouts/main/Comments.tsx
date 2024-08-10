@@ -1,5 +1,5 @@
 import { Box, Typography, Divider, Grid, Button, FormHelperText } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -9,6 +9,7 @@ import { CommentCreationDto } from '../../../dtos/comments/commentCreationDto';
 import CustomTextAreaComponent from '../../common/CustomTextAreaComponent';
 import DialogComponent from '../../common/DialogComponent';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../contexts/AuthContext';
 
 
 const validationSchema = Yup.object({
@@ -16,6 +17,7 @@ const validationSchema = Yup.object({
 });
 
 const Comments = ({ blogId }: { blogId: number }) => {
+    const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [comments, setComments] = useState<CommentDto[]>([]);
     const [openAlert, setOpenAlert] = useState(false);
@@ -53,9 +55,9 @@ const Comments = ({ blogId }: { blogId: number }) => {
 
         const commentDto: CommentDto = {
             id: comments.length + 1,
-            authorFullName: "John Doe",
-            authorId: 1,
-            blogId: 1,
+            authorFullName: authContext.currentUser?.fullName || "Anonymous",
+            authorId: authContext.currentUser?.id || 1,
+            blogId: blogId,
             content: formik.values.text,
             createdAt: new Date(),
         };
@@ -73,8 +75,8 @@ const Comments = ({ blogId }: { blogId: number }) => {
         const remainingComments = comments.filter((comment) => comment.id !== currentCommentId);
         setComments(remainingComments);
 
-        toast.success("Comment deleted successfully.");
         setOpenAlert(false);
+        toast.success("Comment deleted successfully.");
     }
 
     return (
@@ -98,8 +100,8 @@ const Comments = ({ blogId }: { blogId: number }) => {
                         <CustomTextAreaComponent
                             fieldName="text"
                             formik={formik}
-                            // eslint-disable-next-line no-constant-condition
-                            label={1 === 1 ? "You can write your comment here" : "You must login to write a comment"}
+                            disabled={!authContext.isAuthenticated}
+                            label={authContext.isAuthenticated ? "You can write your comment here" : "You must login to write a comment"}
                         />
                         <FormHelperText sx={{ color: "red" }}>{formik.touched.text && formik.errors.text}</FormHelperText>
 
@@ -125,11 +127,13 @@ const Comments = ({ blogId }: { blogId: number }) => {
                             </Typography>
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
                                 <Typography variant="subtitle2" color="textSecondary">
-                                     {comment.createdAt.toLocaleDateString()}
+                                    {comment.createdAt.toLocaleDateString()}
                                 </Typography>
-                                <Typography sx={{ cursor: "pointer", ":hover":{
-                                    textDecoration:"underline"
-                                } }}
+                                <Typography sx={{
+                                    cursor: "pointer", ":hover": {
+                                        textDecoration: "underline"
+                                    }
+                                }}
                                     variant="subtitle2" color="textSecondary" onClick={() => { navigate(`/author/${comment.authorId}`) }}>
                                     {comment.authorFullName}
                                 </Typography>

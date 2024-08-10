@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import CustomTextFieldComponent from '../../components/common/CustomTextFieldCom
 import { SignUpDto } from '../../dtos/users/signUpDto';
 import { Link as MuiLink } from '@mui/material';
 import { SignInDto } from '../../dtos/users/signInDto';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Email is invalid').required('Email is required'),
@@ -15,30 +16,24 @@ const validationSchema = Yup.object({
 });
 
 const SignInPage = () => {
+  const authContext = useContext(AuthContext);
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: '',
+      email: 'emreakinci@gmail.com',
+      password: '123456',
     },
     validationSchema,
     onSubmit: async (values) => {
       setSubmitted(true);
-      await signIn();
+      const dto = { email: values.email, password: values.password } as SignInDto;
+
+      await authContext.signIn(dto);
     },
   });
 
-  const signIn = async () => {
-    const signInDto: SignInDto = {
-      email: formik.values.email,
-      password: formik.values.password,
-
-    };
-
-    console.log(signInDto);
-  }
 
   return (
     <Container component="main" sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -51,10 +46,10 @@ const SignInPage = () => {
             <LockOutlinedIcon fontSize="large" />
             <Typography component="h1" variant="h5">Sign In</Typography>
             <form onSubmit={formik.handleSubmit} style={{ width: '100%', marginTop: 16 }}>
-              
+
               <CustomTextFieldComponent formik={formik} fieldName='email' label='Email' type='email' />
               <CustomTextFieldComponent formik={formik} fieldName='password' label='Password' type='password' />
-              
+
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, width: '100%' }}>
                 <Typography variant="body2">
                   Don't have an account?{' '}
