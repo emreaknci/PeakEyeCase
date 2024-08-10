@@ -28,5 +28,10 @@ export const JwtHelper = {
     isAdministrator: (token: string): boolean => {
         const claims = JwtHelper.getTokenInfos(token);
         return claims.role.toString() === Role.Admin.toString();
+    },
+
+    getUserId: (token: string): number => {
+        const claims = JwtHelper.getTokenInfos(token);
+        return parseInt(claims.user);
     }
 }

@@ -1,6 +1,5 @@
 package model
 
-// Role türünü tanımlıyoruz
 type Role int
 
 const (

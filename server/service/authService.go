@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	user_dto "github.com/emreaknci/peakeyecase/server/dto/user"
+	"github.com/emreaknci/peakeyecase/server/model"
 	"github.com/emreaknci/peakeyecase/server/repository"
 	"github.com/emreaknci/peakeyecase/server/utils/mapping"
 	"github.com/emreaknci/peakeyecase/server/utils/response"
@@ -16,6 +17,7 @@ import (
 type AuthService interface {
 	SignIn(dto user_dto.SignInDto) response.CustomResponse
 	SignUp(dto user_dto.SignUpDto) response.CustomResponse
+	AssignRole(dto user_dto.AssignRoleDto) response.CustomResponse
 }
 
 type authService struct {
@@ -85,4 +87,25 @@ func (a *authService) SignUp(dto user_dto.SignUpDto) response.CustomResponse {
 	}
 
 	return response.CustomResponse{Status: true, Message: "User created successfully.", Data: createdUser, StatusCode: 201}
+}
+
+func (a *authService) AssignRole(dto user_dto.AssignRoleDto) response.CustomResponse {
+	user, err := a.repo.GetByID(dto.UserId)
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return response.CustomResponse{Status: false, Message: "User not found.", StatusCode: 404}
+		}
+		return response.CustomResponse{Status: false, Message: "An error occurred while checking user", Error: err.Error(), StatusCode: 500}
+	}
+
+	user.Role = model.Role(dto.Role)
+
+	updatedUser, err := a.repo.Update(user)
+
+	if err != nil {
+		return response.CustomResponse{Status: false, Message: "An error occurred while updating user", Error: err.Error(), StatusCode: 500}
+	}
+
+	return response.CustomResponse{Status: true, Message: "Role assigned successfully.", Data: updatedUser, StatusCode: 200}
 }

@@ -11,6 +11,7 @@ import (
 type AuthController interface {
 	SignIn(c *gin.Context)
 	SignUp(c *gin.Context)
+	AssignRole(c *gin.Context)
 }
 
 type authController struct {
@@ -29,12 +30,6 @@ func (a *authController) SignIn(c *gin.Context) {
 	}
 
 	response := a.service.SignIn(dto)
-
-	if !response.Status {
-		c.JSON(response.StatusCode, response)
-		return
-	}
-
 	c.JSON(response.StatusCode, response)
 }
 
@@ -46,11 +41,16 @@ func (a *authController) SignUp(c *gin.Context) {
 	}
 
 	response := a.service.SignUp(dto)
+	c.JSON(response.StatusCode, response)
+}
 
-	if !response.Status {
-		c.JSON(response.StatusCode, response)
+func (a *authController) AssignRole(c *gin.Context) {
+	var dto user_dto.AssignRoleDto
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	response := a.service.AssignRole(dto)
 	c.JSON(response.StatusCode, response)
 }

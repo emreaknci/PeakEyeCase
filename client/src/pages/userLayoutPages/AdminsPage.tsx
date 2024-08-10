@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { Grid, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TablePagination } from '@mui/material';
 import { toast } from 'react-toastify';
@@ -6,8 +6,14 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { UserDto } from '../../dtos/users/userDto';
 import DialogComponent from '../../components/common/DialogComponent';
+import UserService from '../../services/user.service';
+import { Role } from '../../models/role';
+import AuthService from '../../services/auth.service';
+import { AssignRoleDto } from '../../dtos/users/assignRoleDto';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const AdminsPage = () => {
+    const authContext = useContext(AuthContext);
     const navigate = useNavigate();
     const [admins, setAdmins] = useState<UserDto[]>();
     const [filteredAdmins, setFilteredAdmins] = useState(admins);
@@ -22,20 +28,9 @@ const AdminsPage = () => {
 
     useEffect(() => {
         const getAdmins = async () => {
-            const admins: UserDto[] = [
-                { id: 1, fullName: 'John Doe', email: 'john@doe.com', jobTitle: 'Admin' },
-                { id: 2, fullName: 'Jane Doe', email: 'jane@doe.com', jobTitle: 'Admin' },
-                { id: 3, fullName: 'John Smith', email: 'john@smith.com', jobTitle: 'Admin' },
-                { id: 4, fullName: 'Alice Johnson', email: 'alice@johnson.com', jobTitle: 'Admin' },
-                { id: 5, fullName: 'Bob Brown', email: 'bob@brown.com', jobTitle: 'Admin' },
-                { id: 6, fullName: 'Charlie Davis', email: 'charlie@davis.com', jobTitle: 'Admin' },
-                { id: 7, fullName: 'Diana Evans', email: 'diana@evans.com', jobTitle: 'Admin' },
-                { id: 8, fullName: 'Evan Fox', email: 'evan@fox.com', jobTitle: 'Admin' },
-                { id: 9, fullName: 'Fiona Green', email: 'fiona@green.com', jobTitle: 'Admin' },
-                { id: 10, fullName: 'George Harris', email: 'george@harris.com', jobTitle: 'Admin' }
-            ];
-
-            setAdmins(admins);
+            UserService.getByRole(Role.Admin).then((response) => {
+                setAdmins(response.data.data);
+            });
         }
         getAdmins();
     }, []);
@@ -60,15 +55,36 @@ const AdminsPage = () => {
     };
 
     const handleRevokeAuth = (user: UserDto) => {
+        console.log(authContext.currentUserId);
         setOpenAlert(true);
-        setAlertText(`Are you sure you want to revoke authorization for user ${user?.fullName}?`);
+
         setCurrentUser(user);
+        if(authContext.currentUserId === user.id){
+            setAlertText(`Are you sure you want to revoke your own authorization? If you do, your privileges will be revoked and you will be logged out.`);
+            return;
+        }
+
+        setAlertText(`Are you sure you want to revoke authorization for user ${user?.fullName}?`);
     }
 
     const handleConfirm = async () => {
-        toast.dismiss();
-        toast.success(`Authorization revoked for user ${currentUser?.fullName}`);
-        setOpenAlert(false);
+        if (!currentUser) return;
+        const dto: AssignRoleDto = {
+            userId: currentUser.id,
+            role: Role.Author
+        }
+
+        AuthService.assignRole(dto).then(() => {
+            
+            if(currentUser.id === authContext.currentUserId){
+                authContext.logout();
+                return;
+            }
+            
+            setAdmins(admins?.filter(admin => admin.id !== currentUser.id));
+            setOpenAlert(false);
+        });
+
     }
 
     return (
@@ -112,24 +128,31 @@ const AdminsPage = () => {
                             </TableRow>
                         </TableHead>
 
-                        <TableBody>
-                            {filteredAdmins && filteredAdmins.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
-                                <TableRow key={user.id}>
-                                    <TableCell>#{user.id}</TableCell>
-                                    <TableCell>{user.fullName} </TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.jobTitle}</TableCell>
-                                    <TableCell>
-                                        <Button variant="outlined" color="warning"
-                                            onClick={() => handleRevokeAuth(user)}
-                                            style={{ borderRadius: "5rem" }}
-                                        >
-                                            Revoke Authorization
-                                        </Button>
-                                    </TableCell>
+                        {filteredAdmins && filteredAdmins?.length > 0
+                            ? <TableBody>
+                                {filteredAdmins.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+                                    <TableRow key={user.id}>
+                                        <TableCell>#{user.id}</TableCell>
+                                        <TableCell>{user.fullName} </TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>{user.jobTitle}</TableCell>
+                                        <TableCell>
+                                            <Button variant="outlined" color="warning"
+                                                onClick={() => handleRevokeAuth(user)}
+                                                style={{ borderRadius: "5rem" }}
+                                            >
+                                                Revoke Authorization
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody> :
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">No admin found</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
+                            </TableBody>
+                        }
 
                     </Table>
                     {filteredAdmins && <TablePagination

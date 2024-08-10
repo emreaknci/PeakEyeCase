@@ -8,6 +8,9 @@ import CustomTextFieldComponent from '../../components/common/CustomTextFieldCom
 import { UserDto } from '../../dtos/users/userDto';
 import { Role } from '../../models/role';
 import { SignUpDto } from '../../dtos/users/signUpDto';
+import UserService from '../../services/user.service';
+import AuthService from '../../services/auth.service';
+import { AssignRoleDto } from '../../dtos/users/assignRoleDto';
 
 
 const validationSchema = Yup.object({
@@ -32,10 +35,12 @@ const AddNewAdminPage = () => {
     const [submitted, setSubmitted] = useState(false);
     const [users, setUsers] = useState<UserDto[]>();
     const [selectedUser, setSelectedUser] = useState<UserDto>();
-    const [isNew, setIsNew] = useState(true);
+    const [isNew, setIsNew] = useState(false);
 
     useEffect(() => {
-        getOtherUsers();
+        UserService.getByRole(Role.Author).then((response) => {
+            setUsers(response.data.data);
+        });
     }, [])
 
     const formik = useFormik({
@@ -67,25 +72,17 @@ const AddNewAdminPage = () => {
         console.log(signUpDto);
     }
 
-    const getOtherUsers = async () => {
-        const users: UserDto[] = [
-            { id: 1, fullName: 'John Doe', email: 'john@doe.com', jobTitle: 'Admin' },
-            { id: 2, fullName: 'Jane Doe', email: 'jane@doe.com', jobTitle: 'Admin' },
-            { id: 3, fullName: 'John Smith', email: 'john@smith.com', jobTitle: 'Admin' },
-            { id: 4, fullName: 'Alice Johnson', email: 'alice@johnson.com', jobTitle: 'Admin' },
-            { id: 5, fullName: 'Bob Brown', email: 'bob@brown.com', jobTitle: 'Admin' },
-            { id: 6, fullName: 'Charlie Davis', email: 'charlie@davis.com', jobTitle: 'Admin' },
-            { id: 7, fullName: 'Diana Evans', email: 'diana@evans.com', jobTitle: 'Admin' },
-            { id: 8, fullName: 'Evan Fox', email: 'evan@fox.com', jobTitle: 'Admin' },
-            { id: 9, fullName: 'Fiona Green', email: 'fiona@green.com', jobTitle: 'Admin' },
-            { id: 10, fullName: 'George Harris', email: 'george@harris.com', jobTitle: 'Admin' }
-        ];
-
-        setUsers(users);
-    }
-
     const grantAuth = async (userId: number) => {
-        toast.success(`Admin privileges granted to user ${selectedUser?.fullName}`);
+        const dto: AssignRoleDto = {
+            userId: userId,
+            role: Role.Admin
+        }
+        AuthService.assignRole(dto).then(() => {
+            toast.dismiss();
+            setUsers(users?.filter(user => user.id !== userId));
+            setIsNew(false);
+            toast.success(`Admin privileges granted to user ${selectedUser?.fullName}`);
+        });
     }
 
     const handleSubmit = async (e: any) => {
@@ -116,17 +113,17 @@ const AddNewAdminPage = () => {
                             <Grid item xs={12} >
                                 <Grid container spacing={3} >
                                     <Grid item xs={12} sm={6}>
-                                        <Typography variant='h4'>Admins</Typography>
+                                        <Typography variant='h4'>New Admin</Typography>
                                     </Grid>
 
-                                    {users && users.length > 0 &&
+                                    {/* {users && users.length > 0 &&
                                         <Grid item xs={12} sm={6} sx={{ pt: { xs: 2, sm: 0 } }}>
                                             <Button fullWidth variant="outlined" sx={{ fontWeight: 'bold' }}
                                                 color="primary" onClick={() => setIsNew(prev => !prev)} >
                                                 {!isNew ? 'Create a new admin user' : 'Select An Exist User'}
                                             </Button>
                                         </Grid>
-                                    }
+                                    } */}
                                 </Grid>
                             </Grid>
                             {!isNew && users && users.length > 0 && <Grid item xs={12} >
@@ -147,7 +144,7 @@ const AddNewAdminPage = () => {
                                     ))}
                                 </Select>
                             </Grid>}
-                            {isNew && <>
+                            {/* {isNew && <>
                                 <Grid item xs={12} >
                                     <Typography variant='h6'>Create a new admin user</Typography>
                                 </Grid>
@@ -166,13 +163,20 @@ const AddNewAdminPage = () => {
                                 <Grid item xs={12} sm={6}>
                                     <CustomTextFieldComponent formik={formik} fieldName='confirmPassword' label="Confirm Password" type="password" />
                                 </Grid>
-                            </>}
-                            <Grid item xs={12} sx={{ pt: { xs: 2, sm: 0 } }}>
+                            </>} */}
+                            {users && users.length > 0 && <Grid item xs={12} sx={{ pt: { xs: 2, sm: 0 } }}>
                                 <Button fullWidth variant="outlined" sx={{ fontWeight: 'bold' }}
                                     color="primary" type="submit" onClick={() => console.log(formik.errors)} >
                                     Add New Admin
                                 </Button>
-                            </Grid>
+                            </Grid>}
+
+                            {!users &&
+                                <Grid item xs={12} >
+                                    <Typography variant='h6'>There is no user to grant admin privileges.</Typography>
+                                </Grid>
+                            }
+
                         </Grid>
                     </form>
                 </Paper>

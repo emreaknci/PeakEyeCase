@@ -6,6 +6,9 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { UserDto } from '../../dtos/users/userDto';
 import DialogComponent from '../../components/common/DialogComponent';
+import UserService from '../../services/user.service';
+import { Role } from '../../models/role';
+import AuthService from '../../services/auth.service';
 
 const AuthorsPage = () => {
     const navigate = useNavigate();
@@ -22,20 +25,10 @@ const AuthorsPage = () => {
 
     useEffect(() => {
         const getUsers = async () => {
-            const users: UserDto[] = [
-                { id: 1, fullName: 'John Doe', email: 'john@doe.com', jobTitle: 'Admin' },
-                { id: 2, fullName: 'Jane Doe', email: 'jane@doe.com', jobTitle: 'Admin' },
-                { id: 3, fullName: 'John Smith', email: 'john@smith.com', jobTitle: 'Admin' },
-                { id: 4, fullName: 'Alice Johnson', email: 'alice@johnson.com', jobTitle: 'Admin' },
-                { id: 5, fullName: 'Bob Brown', email: 'bob@brown.com', jobTitle: 'Admin' },
-                { id: 6, fullName: 'Charlie Davis', email: 'charlie@davis.com', jobTitle: 'Admin' },
-                { id: 7, fullName: 'Diana Evans', email: 'diana@evans.com', jobTitle: 'Admin' },
-                { id: 8, fullName: 'Evan Fox', email: 'evan@fox.com', jobTitle: 'Admin' },
-                { id: 9, fullName: 'Fiona Green', email: 'fiona@green.com', jobTitle: 'Admin' },
-                { id: 10, fullName: 'George Harris', email: 'george@harris.com', jobTitle: 'Admin' }
-            ];
+            UserService.getByRole(Role.Author).then((response) => {
+                setUsers(response.data.data);
+            });
 
-            setUsers(users);
         }
         getUsers();
     }, []);
@@ -65,8 +58,13 @@ const AuthorsPage = () => {
     }
 
     const handleConfirm = async () => {
+        if (!currentUser) return;
         toast.dismiss();
-        toast.success(`Authorization granted for user ${currentUser?.fullName}`);
+        AuthService.assignRole({ userId: currentUser.id, role: Role.Admin }).then(() => {
+            setUsers(users?.filter((user) => user.id !== currentUser.id));
+            setOpenAlert(false);
+            setCurrentUser(undefined);
+        });
         setOpenAlert(false);
     }
 
@@ -106,31 +104,33 @@ const AuthorsPage = () => {
                             </TableRow>
                         </TableHead>
 
-                        <TableBody>
-                            {filteredUsers && filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
-                                <TableRow key={user.id}>
-                                    <TableCell>#{user.id}</TableCell>
-                                    <TableCell>{user.fullName} </TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>
-                                        <Button variant="outlined" color="inherit"
-                                            onClick={() => navigate(`/me/authors/${user.id}`)}
-                                            style={{ borderRadius: "5rem" }}
-                                        >
-                                            View Profile
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button variant="outlined" color="success"
-                                            onClick={() => handleAuth(user)}
-                                            style={{ borderRadius: "5rem" }}
-                                        >
-                                            Authorize
-                                        </Button>
-                                    </TableCell>
+                        {filteredUsers && filteredUsers?.length > 0
+                            ? <TableBody>
+                                {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+                                    <TableRow key={user.id}>
+                                        <TableCell>#{user.id}</TableCell>
+                                        <TableCell>{user.fullName} </TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell>{user.jobTitle}</TableCell>
+                                        <TableCell>
+                                            <Button variant="outlined" color="warning"
+                                                onClick={() => handleAuth(user)}
+                                                style={{ borderRadius: "5rem" }}
+                                            >
+                                                Revoke Authorization
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody> :
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">No author found</TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
+                            </TableBody>
+
+                        }
+
 
                     </Table>
                     {filteredUsers && <TablePagination

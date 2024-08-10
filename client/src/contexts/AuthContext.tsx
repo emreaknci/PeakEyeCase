@@ -8,7 +8,7 @@ import { SignInDto } from '../dtos/users/signInDto';
 import { JwtHelper } from '../utils/security/jwtHelper';
 
 export const AuthContext = createContext({
-    currentUser: null as User | null,
+    currentUserId: null as number | null,
     isAuthenticated: false,
     isTokenChecked: false,
     isAdmin: false,
@@ -18,8 +18,8 @@ export const AuthContext = createContext({
 
 
 export const AuthProvider = ({ children }: any) => {
+    const [currentUserId, setCurrentUserId] = useState<number | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [currentUser, setCurrentUser] = useState<User | undefined>();
     const [isTokenChecked, setIsTokenChecked] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
 
@@ -31,10 +31,13 @@ export const AuthProvider = ({ children }: any) => {
                 setIsAdmin(JwtHelper.isAdministrator(token));
                 setIsAuthenticated(true);
                 setIsTokenChecked(true);
+                setCurrentUserId(JwtHelper.getUserId(token));
+
                 return;
             }
             setIsAuthenticated(false);
             setIsTokenChecked(true);
+            setCurrentUserId(null);
             return;
         }
 
@@ -74,8 +77,10 @@ export const AuthProvider = ({ children }: any) => {
     }
 
     const logout = () => {
-        setCurrentUser(undefined);
         setIsAuthenticated(false);
+        setIsAdmin(false);
+        setIsTokenChecked(false);
+        setCurrentUserId(null);
         StorageService.clearAccessToken();
     }
 
@@ -83,7 +88,7 @@ export const AuthProvider = ({ children }: any) => {
 
     return (
         <AuthContext.Provider value={{
-            currentUser: currentUser as User | null,
+            currentUserId,
             isAuthenticated,
             isTokenChecked,
             isAdmin,
