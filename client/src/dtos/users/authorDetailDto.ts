@@ -4,7 +4,6 @@ export interface AuthorDetailDto {
     email: string;
     createdAt: Date;
     about: string;
-    imageUri: string;
-    socialLinks: string[];
+    socialLinks?: string[];
     jobTitle: string;
 }

@@ -10,10 +10,10 @@ import (
 
 func UserRoutes(container *dig.Container, router *gin.Engine) {
 	err := container.Invoke(func(userController controller.UserController) {
-		router.GET("/users", middleware.Auth([]model.Role{model.Admin}), userController.GetAllUsers)
-		router.GET("/users/get-by-role/:role", middleware.Auth([]model.Role{model.Admin}), userController.GetAllByRole)
-		router.GET("/users/get-by-email/:email", userController.GetUserByEmail)
-		router.GET("/users/get-by-id/:id", userController.GetUserById)
+		router.GET("/user", middleware.Auth([]model.Role{model.Admin}), userController.GetAllUsers)
+		router.GET("/user/get-by-role/:role", middleware.Auth([]model.Role{model.Admin}), userController.GetAllByRole)
+		router.GET("/user/get-by-email/:email", userController.GetUserByEmail)
+		router.GET("/user/get-by-id/:id", userController.GetUserById)
 	})
 	if err != nil {
 		panic(err)

@@ -14,6 +14,7 @@ func BlogRoutes(container *dig.Container, router *gin.Engine) {
 		router.PUT("/blog", middleware.Auth([]model.Role{}), blogController.Edit)
 		router.DELETE("/blog/:id", middleware.Auth([]model.Role{model.Admin}), blogController.Delete)
 		router.GET("/blog/get-by-id/:id", blogController.GetById)
+		router.GET("/blog/get-by-category/:id", blogController.GetByCategoryId)
 		router.GET("/blog", blogController.GetAll)
 		router.GET("/blog/my-blogs", middleware.Auth([]model.Role{}), blogController.GetMyBlogs)
 		router.GET("/blog/get-all-by-author-id/:authorId", blogController.GetAllByAuthorId)

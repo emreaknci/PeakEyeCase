@@ -22,6 +22,7 @@ type BlogService interface {
 	GetAllByAuthorId(authorId uint) response.CustomResponse
 	GetAll() response.CustomResponse
 	IsOwnedByUser(blogId uint, userId uint) response.CustomResponse
+	GetAllByCategory(categoryId uint) response.CustomResponse
 }
 
 type blogService struct {
@@ -151,6 +152,28 @@ func (b *blogService) IsOwnedByUser(blogId uint, userId uint) response.CustomRes
 
 	return response.CustomResponse{Message: "Blog is owned by user", Status: true, StatusCode: 200}
 }
+
+func (b *blogService) GetAllByCategory(categoryId uint) response.CustomResponse {
+	blogs, err := b.repo.GetAllByFilter(func(b model.Blog) bool {
+		return b.CategoryID == categoryId
+	}, "Category", "User")
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
+	}
+
+	if len(blogs) == 0 {
+		return response.CustomResponse{Message: "No blogs found", Status: false, Data: []blog_dto.BlogListDto{}, StatusCode: 404}
+	}
+
+	var blogList []blog_dto.BlogListDto
+	for _, blog := range blogs {
+		blogList = append(blogList, mapping.BlogToBlogListDto(blog))
+	}
+
+	return response.CustomResponse{Message: "Blog listed successfully", Status: true, Data: blogList, StatusCode: 200}
+}
+
+
 
 func uploadBlogImage(image *multipart.FileHeader) response.CustomResponse {
 	file, err := image.Open()

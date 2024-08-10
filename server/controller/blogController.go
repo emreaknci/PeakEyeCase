@@ -19,6 +19,7 @@ type BlogController interface {
 	GetAll(c *gin.Context)
 	GetAllByAuthorId(c *gin.Context)
 	GetMyBlogs(c *gin.Context)
+	GetByCategoryId(c *gin.Context)
 }
 
 type blogController struct {
@@ -148,5 +149,18 @@ func (b *blogController) GetMyBlogs(c *gin.Context) {
 	}
 
 	response := b.service.GetAllByAuthorId(userId)
+	c.JSON(response.StatusCode, response)
+}
+
+func (b *blogController) GetByCategoryId(c *gin.Context) {
+	categoryIdStr := c.Param("id")
+
+	categoryId, err := strconv.Atoi(categoryIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	response := b.service.GetAllByCategory(uint(categoryId))
 	c.JSON(response.StatusCode, response)
 }

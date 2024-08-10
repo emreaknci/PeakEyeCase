@@ -9,6 +9,8 @@ import BlogList from '../../components/layouts/main/BlogList';
 import BlogCard from '../../components/layouts/user/BlogCard';
 import DialogComponent from '../../components/common/DialogComponent';
 import { toast } from 'react-toastify';
+import BlogService from '../../services/blog.service';
+import UserService from '../../services/user.service';
 
 const AuthorDetailPage = () => {
     const { id } = useParams();
@@ -23,30 +25,19 @@ const AuthorDetailPage = () => {
 
     useEffect(() => {
         if (!id) return;
-        const author: AuthorDetailDto = {
-            id: parseInt(id),
-            fullName: 'John Doe',
-            imageUri: 'https://e7.pngegg.com/pngimages/348/800/png',
-            createdAt: new Date(),
-            about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt.',
-            email: 'x@c.om',
-            jobTitle: 'Software Developer',
-            socialLinks: ['https://www.facebook.com', 'https://www.twitter.com'],
-        };
-        setAuthor(author);
 
-        const blog: BlogListDto = {
-            id: 1,
-            title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
-            imageUri: 'https://i.pinimg.com/originals/0d/84/8c/0d848c32d1181011fba9fec18e461531.jpg',
-            createdAt: new Date(),
-            categoryId: 1, categoryName: 'Technology',
-            authorId: 1, authorFullName: 'John Doe',
-            authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png',
-            isDeleted: false,
-            isHidden: false,
-        };
-        setBlogs([blog, blog, blog, blog, blog, blog, blog, blog]);
+        UserService.getById(id).then(response => {
+            const defaultSocialLinks: string[] = ['https://www.facebook.com/', 'https://www.twitter.com/',];
+            const data = response.data.data as AuthorDetailDto;
+            data.socialLinks = defaultSocialLinks
+            setAuthor(data);
+        });
+
+        BlogService.getAllByAuthorId(id).then(response => {
+            setBlogs(response.data.data);
+        });
+
+
     }, [id]);
 
     const handleDeleteBlog = (blog: BlogListDto) => {
@@ -72,7 +63,7 @@ const AuthorDetailPage = () => {
                         {author && (
                             <>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Avatar alt={author.fullName} src={author.imageUri} style={{ width: '5rem', height: '5rem', marginRight: '1rem' }} />
+                                    <Avatar alt={author.fullName} style={{ width: '5rem', height: '5rem', marginRight: '1rem' }} />
                                     <div>
                                         <Typography variant="h5">{author.fullName}</Typography>
                                         <Typography variant="subtitle1" color="textSecondary">{author.jobTitle}</Typography>
@@ -80,7 +71,7 @@ const AuthorDetailPage = () => {
                                 </div>
                                 <Typography variant="body1" style={{ margin: '20px 0' }}>{author.about}</Typography>
                                 <div>
-                                    {author.socialLinks.map((link, index) => (
+                                    {author.socialLinks && author.socialLinks.map((link, index) => (
                                         <IconButton key={index} href={link} target="_blank" color="primary">
                                             {link.includes('facebook') && <FacebookIcon color='action' />}
                                             {link.includes('twitter') && <TwitterIcon color='action' />}

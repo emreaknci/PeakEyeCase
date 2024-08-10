@@ -6,6 +6,8 @@ import { Grid, Paper, Typography, Avatar, IconButton } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import BlogList from '../../components/layouts/main/BlogList';
+import BlogService from '../../services/blog.service';
+import UserService from '../../services/user.service';
 
 const AuthorPage = () => {
   const { id } = useParams();
@@ -14,31 +16,21 @@ const AuthorPage = () => {
   const [blogs, setBlogs] = useState<BlogListDto[] | null>(null);
 
   useEffect(() => {
-    const author: AuthorDetailDto = {
-      id: 1,
-      fullName: 'John Doe',
-      imageUri: 'https://e7.pngegg.com/pngimages/348/800/png',
-      createdAt: new Date(),
-      about: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque saepe culpa incidunt.',
-      email: 'x@c.om',
-      jobTitle: 'Software Developer',
-      socialLinks: ['https://www.facebook.com', 'https://www.twitter.com'],
-    };
-    setAuthor(author);
+    if (!id) return;
 
-    const blog: BlogListDto = {
-      id: 1,
-      title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
-      imageUri: 'https://i.pinimg.com/originals/0d/84/8c/0d848c32d1181011fba9fec18e461531.jpg',
-      createdAt: new Date(),
-      categoryId: 1, categoryName: 'Technology',
-      authorId: 1, authorFullName: 'John Doe',
-      authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png',
-      isDeleted: false,
-      isHidden: false,
-    };
-    setBlogs([blog, blog, blog, blog, blog, blog, blog, blog]);
-  }, []);
+    UserService.getById(id).then(response => {
+      const defaultSocialLinks: string[] = ['https://www.facebook.com/', 'https://www.twitter.com/',];
+      const data = response.data.data as AuthorDetailDto;
+      data.socialLinks = defaultSocialLinks
+      setAuthor(data);
+    });
+
+    BlogService.getAllByAuthorId(id).then(response => {
+      setBlogs(response.data.data);
+    });
+
+
+  }, [id]);
 
   return (
     <Grid justifyContent="center" alignItems="center">
@@ -47,8 +39,8 @@ const AuthorPage = () => {
           {author && (
             <>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Avatar alt={author.fullName} src={author.imageUri}
-                  style={{ width: '5rem', height: '5rem', marginRight: '1rem' }}
+                <Avatar alt={author.fullName}
+                  style={{ width: '5rem', height: '5rem', marginRight: '1rem', backgroundColor: 'primary.main' }}
                 />
                 <div>
                   <Typography variant="h5">{author.fullName}</Typography>
@@ -57,7 +49,7 @@ const AuthorPage = () => {
               </div>
               <Typography variant="body1" style={{ margin: '20px 0' }}>{author.about}</Typography>
               <div>
-                {author.socialLinks.map((link, index) => (
+                {author.socialLinks && author.socialLinks.map((link, index) => (
                   <IconButton key={index} href={link} target="_blank" color="primary">
                     {link.includes('facebook') && <FacebookIcon color='action' />}
                     {link.includes('twitter') && <TwitterIcon color='action' />}

@@ -14,7 +14,6 @@ import BlogService from '../../services/blog.service'
 
 
 const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
-  const themeContext = useContext(CustomThemeContext);
   const navigate = useNavigate()
 
   return (
@@ -80,30 +79,46 @@ const HomePage = () => {
   const [featuredBlog, setFeaturedBlog] = React.useState<BlogListDto | null>(null);
 
   useEffect(() => {
-    setLoading(true)
-    BlogService.getAll().then(response => {
-      const datas = response.data.data as BlogListDto[]
-      const featuredBlog = datas.slice(0, 1)[0]
+    const setData = (blogs: BlogListDto[]) => {
+      const featuredBlog =blogs[0]
       setFeaturedBlog(featuredBlog)
+      blogs.shift()
+      setBlogs(blogs)
+    
+    }
+    const getBlogs = () => {
+      setLoading(true)
+      BlogService.getAll().then(response => {
+        setData(response.data.data)
+      }).finally(() => {
+        setLoading(false)
+      })
+    }
 
-      const otherBlogs = datas.slice(1)
-      setBlogs(otherBlogs)
+    const getBlogsByCategory = (id: string) => {
+      setLoading(true)
+      BlogService.getAllByCategoryId(id).then(response => {
+        setData(response.data.data)
+      }).finally(() => {
+        setLoading(false)
+      })
+    }
 
-      setLoading(false)
-    }).finally(() => {
-      setLoading(false)
-    })
-  }, [])
-
-  useEffect(() => {
-    if (id) {
+    const getCategory = (id: string) => {
       setLoading(true)
       CategoryService.getById(id).then(response => {
         setCategory(response.data.data)
+      }).finally(() => {
+        setLoading(false)
       })
-        .finally(() => {
-          setLoading(false)
-        })
+    }
+    console.log(id)
+    if (id != undefined) {
+      getCategory(id)
+      getBlogsByCategory(id)
+    }
+    else {
+      getBlogs()
     }
   }, [id])
 

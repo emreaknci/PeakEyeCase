@@ -9,6 +9,8 @@ import CustomTextFieldComponent from '../../components/common/CustomTextFieldCom
 import ImagePickerComponent from '../../components/common/ImagePickerComponent';
 import ReactQuill from 'react-quill';
 import { Label } from '@mui/icons-material';
+import CategoryService from '../../services/category.service';
+import BlogService from '../../services/blog.service';
 
 
 const validationSchema = Yup.object({
@@ -33,6 +35,7 @@ const sxValues = {
 
 
 const AddNewBlogPage = () => {
+    const navigate=useNavigate();
     const [categories, setCategories] = useState<Category[]>();
     const [coverImage, setCoverImage] = useState<File | null>(null);
     const [submitted, setSubmitted] = useState(false);
@@ -48,7 +51,6 @@ const AddNewBlogPage = () => {
         validationSchema,
         onSubmit: async (values) => {
             setSubmitted(true);
-            console.log(values);
 
             const formData = new FormData();
             formData.append('title', values.title);
@@ -61,23 +63,18 @@ const AddNewBlogPage = () => {
     });
 
     const addBlog = async (formData: FormData) => {
-        toast.dismiss();
-        toast.success('Blog added successfully');
+        BlogService.create(formData).then((response) => {
+            navigate('/me/my-blogs');
+        })
     }
 
-    const getCategories = async () => {
-        const categories: Category[] = [
-            { id: 1, name: 'Technology' },
-            { id: 2, name: 'Fashion' },
-            { id: 3, name: 'Health' },
-            { id: 4, name: 'Sports' },
-            { id: 5, name: 'Education' },
-        ];
-
-        setCategories(categories);
-    }
 
     useEffect(() => {
+        const getCategories = async () => {
+            CategoryService.getAll().then((response) => {
+                setCategories(response.data.data);
+            });
+        }
         getCategories();
     }, []);
 
