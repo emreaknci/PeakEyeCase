@@ -97,7 +97,7 @@ func (b *blogService) GetAll() response.CustomResponse {
 }
 
 func (b *blogService) GetById(id uint) response.CustomResponse {
-	blog, err := b.repo.GetByID(id)
+	blog, err := b.repo.GetDetailById(id)
 	if err != nil {
 		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
 	}

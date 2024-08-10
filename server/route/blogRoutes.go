@@ -10,11 +10,11 @@ import (
 
 func BlogRoutes(container *dig.Container, router *gin.Engine) {
 	err := container.Invoke(func(blogController controller.BlogController) {
-		router.POST("/blog", middleware.Auth([]model.Role{model.Author, model.Admin}), blogController.Add)
-		router.PUT("/blog", middleware.Auth([]model.Role{model.Author, model.Admin}), blogController.Edit)
+		router.POST("/blog", middleware.Auth([]model.Role{}), blogController.Add)
+		router.PUT("/blog", middleware.Auth([]model.Role{}), blogController.Edit)
 		router.DELETE("/blog/:id", middleware.Auth([]model.Role{model.Admin}), blogController.Delete)
-		router.GET("/blog/get-by-id/:id", middleware.Auth([]model.Role{model.Author, model.Admin}), blogController.GetById)
-		router.GET("/blog", middleware.Auth([]model.Role{model.Author, model.Admin}), blogController.GetAll)
+		router.GET("/blog/get-by-id/:id", blogController.GetById)
+		router.GET("/blog", blogController.GetAll)
 	})
 
 	if err != nil {
