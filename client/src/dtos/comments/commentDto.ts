@@ -1,7 +1,7 @@
 export interface CommentDto {
     id: number;
     content: string;
-    createdAt: Date;
+    createdAt: string;
     authorId: number;
     authorFullName: string;
     blogId: number;

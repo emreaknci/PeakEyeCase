@@ -10,4 +10,5 @@ func RegisterRoutes(container *dig.Container, router *gin.Engine) {
 	UserRoutes(container, router)
 	BlogRoutes(container, router)
 	CategoryRoutes(container, router)
+	CommentRoutes(container, router)
 }

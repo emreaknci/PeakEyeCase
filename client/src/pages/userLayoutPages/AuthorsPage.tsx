@@ -99,6 +99,7 @@ const AuthorsPage = () => {
                                 <TableCell>ID</TableCell>
                                 <TableCell>Full Name</TableCell>
                                 <TableCell>Email</TableCell>
+                                <TableCell>Job Title</TableCell>
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
@@ -113,13 +114,23 @@ const AuthorsPage = () => {
                                         <TableCell>{user.email}</TableCell>
                                         <TableCell>{user.jobTitle}</TableCell>
                                         <TableCell>
-                                            <Button variant="outlined" color="warning"
+                                            <Button variant="outlined" color="inherit"
+                                                onClick={() => navigate(`/me/authors/${user.id}`)}
+                                                style={{ borderRadius: "5rem" }}
+                                            >
+                                                View Profile
+                                            </Button>
+                                        </TableCell>
+
+                                        <TableCell>
+                                            <Button variant="outlined" color="success"
                                                 onClick={() => handleAuth(user)}
                                                 style={{ borderRadius: "5rem" }}
                                             >
-                                                Revoke Authorization
+                                                Authorize
                                             </Button>
                                         </TableCell>
+
                                     </TableRow>
                                 ))}
                             </TableBody> :

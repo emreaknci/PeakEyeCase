@@ -10,6 +10,7 @@ import CustomTextAreaComponent from '../../common/CustomTextAreaComponent';
 import DialogComponent from '../../common/DialogComponent';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../contexts/AuthContext';
+import CommentService from '../../../services/comment.service';
 
 
 const validationSchema = Yup.object({
@@ -24,19 +25,31 @@ const Comments = ({ blogId }: { blogId: number }) => {
     const [currentCommentId, setCurrentCommentId] = useState<number>(0);
 
     useEffect(() => {
-        //fetch comments
-
+        CommentService.getAllByBlogId(blogId).then(response => {
+            console.log(response.data.data);
+            setComments(response.data.data);
+        })
     }, [blogId]);
 
     const formik = useFormik({
         initialValues: {
             text: '',
-            rating: 0,
-            hideUserFullName: false,
         },
         validationSchema,
         onSubmit: (values) => {
-            handleAddComment();
+            const dto: CommentCreationDto = {
+                authorId: authContext.currentUserId || 0,
+                blogId: blogId,
+                content: values.text,
+            }
+            console.log(dto);
+
+            CommentService.create(dto).then((response) => {
+                formik.resetForm();
+                setComments([response.data.data, ...comments]);
+            }).catch((error) => {
+                toast.error("An error occurred while creating the comment.");
+            });
         },
     });
 
@@ -45,38 +58,13 @@ const Comments = ({ blogId }: { blogId: number }) => {
         setCurrentCommentId(commentId);
     }
 
-    const handleAddComment = async () => {
-        const dto: CommentCreationDto = {
-            authorId: 1,
-            blogId: blogId,
-            content: formik.values.text,
-        };
-        toast.dismiss();
-
-        const commentDto: CommentDto = {
-            id: comments.length + 1,
-            authorFullName: authContext.currentUser?.fullName || "Anonymous",
-            authorId: authContext.currentUser?.id || 1,
-            blogId: blogId,
-            content: formik.values.text,
-            createdAt: new Date(),
-        };
-
-        setComments([commentDto, ...comments]);
-
-        formik.resetForm();
-
-        toast.success("Comment added successfully.");
-
-    }
-
     const handleConfirm = async () => {
-
-        const remainingComments = comments.filter((comment) => comment.id !== currentCommentId);
-        setComments(remainingComments);
-
-        setOpenAlert(false);
-        toast.success("Comment deleted successfully.");
+        CommentService.delete(currentCommentId).then(() => {
+            const remainingComments = comments.filter((comment) => comment.id !== currentCommentId);
+            setComments(remainingComments);
+            setCurrentCommentId(0);
+            setOpenAlert(false);
+        });
     }
 
     return (
@@ -95,23 +83,13 @@ const Comments = ({ blogId }: { blogId: number }) => {
                 </Grid>
                 <Grid item xs={12}>
                     <form onSubmit={formik.handleSubmit}>
-                        <FormHelperText sx={{ color: "red" }}>{formik.touched.rating && formik.errors.rating}</FormHelperText>
-
-                        <CustomTextAreaComponent
-                            fieldName="text"
-                            formik={formik}
+                        <CustomTextAreaComponent fieldName="text" formik={formik}
                             disabled={!authContext.isAuthenticated}
                             label={authContext.isAuthenticated ? "You can write your comment here" : "You must login to write a comment"}
                         />
                         <FormHelperText sx={{ color: "red" }}>{formik.touched.text && formik.errors.text}</FormHelperText>
 
-                        <Button
-                            variant="text"
-                            fullWidth
-                            sx={{ borderRadius: 3, }}
-                            color="inherit"
-                            onClick={() => formik.handleSubmit()}
-                        >
+                        <Button variant="text" fullWidth sx={{ borderRadius: 3, }} color="inherit" onClick={() => formik.handleSubmit()}>
                             Share
                         </Button>
                     </form>
@@ -120,14 +98,15 @@ const Comments = ({ blogId }: { blogId: number }) => {
                     {comments && comments.map((comment, index) => (
                         <Box key={index} mb={2} mt={2}>
                             <Typography variant="h6" color="textPrimary" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <Button variant="text" color="error" onClick={() => handleDeleteComment(comment.id)}>Delete</Button>
+                                <Button variant="text" color="error"
+                                    disabled={authContext.currentUserId !== comment.authorId} onClick={() => handleDeleteComment(comment.id)}>Delete</Button>
                             </Typography>
                             <Typography variant="h6" color="textPrimary" style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 {comment.content}
                             </Typography>
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
                                 <Typography variant="subtitle2" color="textSecondary">
-                                    {comment.createdAt.toLocaleDateString()}
+                                    {comment.createdAt}
                                 </Typography>
                                 <Typography sx={{
                                     cursor: "pointer", ":hover": {

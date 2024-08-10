@@ -3,13 +3,13 @@ import { CommentDto } from '../../../dtos/comments/commentDto';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import DialogComponent from '../../common/DialogComponent';
-import { toast } from 'react-toastify';
+import CommentService from '../../../services/comment.service';
 
 interface CommentsProps {
   comments: CommentDto[];
   setComments: any;
   isMyComments: boolean;
-  
+
 }
 
 const Comments = (props: CommentsProps) => {
@@ -24,10 +24,14 @@ const Comments = (props: CommentsProps) => {
     setCurrentCommentId(id);
   }
   const handleConfirm = async () => {
-    toast.success('Comment deleted successfully');
-    props.setComments(props.comments.filter(comment => comment.id !== currentCommentId));
-    setOpenAlert(false);
-    setCurrentCommentId(undefined);
+    if (!currentCommentId) return;
+
+    CommentService.delete(currentCommentId).then(response => {
+      props.setComments(props.comments.filter(comment => comment.id !== currentCommentId));
+      setOpenAlert(false);
+      setCurrentCommentId(undefined);
+    });
+
   }
 
   return (

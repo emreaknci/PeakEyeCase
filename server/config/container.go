@@ -30,6 +30,7 @@ func RegisterServices(db *gorm.DB) *dig.Container {
 	registerUserAndAuthServices(container)
 	registerBlogServices(container)
 	registerCategoryServices(container)
+	registerCommentServices(container)
 
 	return container
 }
@@ -116,6 +117,31 @@ func registerCategoryServices(container *dig.Container) {
 
 	err = container.Provide(func(categoryService service.CategoryService) controller.CategoryController {
 		return controller.NewCategoryController(categoryService)
+	})
+	if err != nil {
+		panic(err)
+	}
+
+}
+
+func registerCommentServices(container *dig.Container) {
+
+	err := container.Provide(func(db *gorm.DB) repository.CommentRepository {
+		return repository.NewCommentRepository(db)
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = container.Provide(func(repo repository.CommentRepository, validate *validator.Validate) service.CommentService {
+		return service.NewCommentService(repo, validate)
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = container.Provide(func(commentService service.CommentService) controller.CommentController {
+		return controller.NewCommentController(commentService)
 	})
 	if err != nil {
 		panic(err)
