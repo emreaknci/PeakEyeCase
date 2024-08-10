@@ -107,14 +107,13 @@ const Navbar = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {authContext.isAuthenticated ? <>
-                  <MenuItem onClick={() => { navigate("/me") }}>My Profile</MenuItem>
-                  <MenuItem onClick={() => authContext.logout()}>Logout </MenuItem>
-                </> :
-                  <>
-                    <MenuItem onClick={() => { navigate("/sign-in") }}>Sign In</MenuItem>
-                    <MenuItem onClick={() => { navigate("/sign-up") }}>Sign Up</MenuItem>
-                  </>}
+                {authContext.isAuthenticated ? [
+                  <MenuItem key="profile" onClick={() => { navigate("/me") }}>My Profile</MenuItem>,
+                  <MenuItem key="logout" onClick={() => authContext.logout()}>Logout</MenuItem>
+                ] : [
+                  <MenuItem key="sign-in" onClick={() => { navigate("/sign-in") }}>Sign In</MenuItem>,
+                  <MenuItem key="sign-up" onClick={() => { navigate("/sign-up") }}>Sign Up</MenuItem>
+                ]}
               </Menu>
             </Box>
           </Toolbar>

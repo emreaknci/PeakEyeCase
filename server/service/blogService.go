@@ -21,6 +21,7 @@ type BlogService interface {
 	GetById(id uint) response.CustomResponse
 	GetAllByAuthorId(authorId uint) response.CustomResponse
 	GetAll() response.CustomResponse
+	IsOwnedByUser(blogId uint, userId uint) response.CustomResponse
 }
 
 type blogService struct {
@@ -75,7 +76,12 @@ func (b *blogService) Edit(dto blog_dto.BlogEditDto) response.CustomResponse {
 		return response.CustomResponse{Message: "Validation error occurred", Status: false, Error: err.Error(), StatusCode: 400}
 	}
 
-	blog, err := b.repo.Update(mapping.BlogEditDtoToBlog(dto))
+	blog, err := b.repo.GetByID(dto.Id)
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
+	}
+
+	blog, err = b.repo.Update(mapping.BlogEditDtoToBlog(dto,blog))
 	if err != nil {
 		return response.CustomResponse{Message: "An error occurred while updating blog", Status: false, Error: err.Error(), StatusCode: 500}
 	}
@@ -84,7 +90,7 @@ func (b *blogService) Edit(dto blog_dto.BlogEditDto) response.CustomResponse {
 }
 
 func (b *blogService) GetAll() response.CustomResponse {
-	blogs, err := b.repo.GetAll()
+	blogs, err := b.repo.GetAllWithDetail()
 	if err != nil {
 		return response.CustomResponse{Message: "An error occurred while getting blogs", Status: false, Error: err.Error(), StatusCode: 500}
 	}
@@ -114,9 +120,9 @@ func (b *blogService) GetById(id uint) response.CustomResponse {
 }
 
 func (b *blogService) GetAllByAuthorId(authorId uint) response.CustomResponse {
-	blogs,err:=b.repo.GetAllByFilter(func(b model.Blog) bool {
+	blogs, err := b.repo.GetAllByFilter(func(b model.Blog) bool {
 		return b.UserId == authorId
-	})
+	}, "Category", "User")
 	if err != nil {
 		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
 	}
@@ -131,6 +137,19 @@ func (b *blogService) GetAllByAuthorId(authorId uint) response.CustomResponse {
 	}
 
 	return response.CustomResponse{Message: "Blog listed successfully", Status: true, Data: blogList, StatusCode: 200}
+}
+
+func (b *blogService) IsOwnedByUser(blogId uint, userId uint) response.CustomResponse {
+	blog, err := b.repo.GetByID(blogId)
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
+	}
+
+	if blog.UserId != userId {
+		return response.CustomResponse{Message: "Blog is not owned by user", Status: false, StatusCode: 400}
+	}
+
+	return response.CustomResponse{Message: "Blog is owned by user", Status: true, StatusCode: 200}
 }
 
 func uploadBlogImage(image *multipart.FileHeader) response.CustomResponse {

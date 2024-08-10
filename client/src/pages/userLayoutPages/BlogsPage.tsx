@@ -7,6 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import DialogComponent from '../../components/common/DialogComponent';
 import { BlogListDto } from '../../dtos/blogs/blogListDto';
 import CategoryButton from '../../components/layouts/main/CategoryButton';
+import BlogService from '../../services/blog.service';
 
 const BlogsPage = () => {
     const navigate = useNavigate();
@@ -36,140 +37,12 @@ const BlogsPage = () => {
 
     useEffect(() => {
         const getBlogs = async () => {
-            const blogs: BlogListDto[] = [
-                {
-                    id: 1,
-                    title: "Understanding TypeScript",
-                    categoryId: 101,
-                    categoryName: "Programming",
-                    createdAt: new Date("2023-08-01"),
-                    imageUri: "https://example.com/images/typescript.jpg",
-                    authorFullName: "John Doe",
-                    authorId: 1,
-                    authorImageUri: "https://example.com/images/john_doe.jpg",
-                    isDeleted: false,
-                    isHidden: true
-                },
-                {
-                    id: 2,
-                    title: "React Hooks in Depth",
-                    categoryId: 101,
-                    categoryName: "Programming",
-                    createdAt: new Date("2023-07-15"),
-                    imageUri: "https://example.com/images/react_hooks.jpg",
-                    authorFullName: "Jane Smith",
-                    authorId: 2,
-                    authorImageUri: "https://example.com/images/jane_smith.jpg",
-                    isDeleted: true,
-                    isHidden: false
-                },
-                {
-                    id: 3,
-                    title: "Exploring Node.js",
-                    categoryId: 102,
-                    categoryName: "Backend Development",
-                    createdAt: new Date("2023-06-20"),
-                    imageUri: "https://example.com/images/nodejs.jpg",
-                    authorFullName: "Alice Johnson",
-                    authorId: 3,
-                    authorImageUri: "https://example.com/images/alice_johnson.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                },
-                {
-                    id: 4,
-                    title: "A Guide to GraphQL",
-                    categoryId: 102,
-                    categoryName: "Backend Development",
-                    createdAt: new Date("2023-05-30"),
-                    imageUri: "https://example.com/images/graphql.jpg",
-                    authorFullName: "Bob Brown",
-                    authorId: 4,
-                    authorImageUri: "https://example.com/images/bob_brown.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                },
-                {
-                    id: 5,
-                    title: "CSS Grid Layout",
-                    categoryId: 103,
-                    categoryName: "Frontend Development",
-                    createdAt: new Date("2023-04-25"),
-                    imageUri: "https://example.com/images/css_grid.jpg",
-                    authorFullName: "Charlie Green",
-                    authorId: 5,
-                    authorImageUri: "https://example.com/images/charlie_green.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                },
-                {
-                    id: 6,
-                    title: "Understanding Docker",
-                    categoryId: 104,
-                    categoryName: "DevOps",
-                    createdAt: new Date("2023-03-18"),
-                    imageUri: "https://example.com/images/docker.jpg",
-                    authorFullName: "David Lee",
-                    authorId: 6,
-                    authorImageUri: "https://example.com/images/david_lee.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                },
-                {
-                    id: 7,
-                    title: "Introduction to Kubernetes",
-                    categoryId: 104,
-                    categoryName: "DevOps",
-                    createdAt: new Date("2023-02-10"),
-                    imageUri: "https://example.com/images/kubernetes.jpg",
-                    authorFullName: "Eva King",
-                    authorId: 7,
-                    authorImageUri: "https://example.com/images/eva_king.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                },
-                {
-                    id: 8,
-                    title: "Getting Started with Python",
-                    categoryId: 105,
-                    categoryName: "Programming Languages",
-                    createdAt: new Date("2023-01-05"),
-                    imageUri: "https://example.com/images/python.jpg",
-                    authorFullName: "Frank White",
-                    authorId: 8,
-                    authorImageUri: "https://example.com/images/frank_white.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                },
-                {
-                    id: 9,
-                    title: "Building REST APIs",
-                    categoryId: 102,
-                    categoryName: "Backend Development",
-                    createdAt: new Date("2022-12-22"),
-                    imageUri: "https://example.com/images/rest_api.jpg",
-                    authorFullName: "Grace Black",
-                    authorId: 9,
-                    authorImageUri: "https://example.com/images/grace_black.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                },
-                {
-                    id: 10,
-                    title: "Effective JavaScript Debugging",
-                    categoryId: 101,
-                    categoryName: "Programming",
-                    createdAt: new Date("2022-11-10"),
-                    imageUri: "https://example.com/images/javascript_debugging.jpg",
-                    authorFullName: "Henry Walker",
-                    authorId: 10,
-                    authorImageUri: "https://example.com/images/henry_walker.jpg",
-                    isDeleted: false,
-                    isHidden: false
-                }
-            ];
 
-            setBlogs(blogs);
+            BlogService.getAll().then((response) => {
+                setBlogs(response.data.data);
+            })
+        
+
         }
         getBlogs();
     }, []);

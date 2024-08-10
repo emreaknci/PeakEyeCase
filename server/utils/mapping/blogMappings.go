@@ -23,16 +23,13 @@ func BlogCreateDtoToBlog(dto blog_dto.BlogCreationDto) model.Blog {
 	}
 }
 
-func BlogEditDtoToBlog(dto blog_dto.BlogEditDto) model.Blog {
-	return model.Blog{
-		Title:      dto.Title,
-		Content:    dto.Content,
-		CategoryID: uint(dto.CategoryId),
-		BaseModel: model.BaseModel{
-			Id:        dto.Id,
-			UpdatedAt: time.Now().Format(time.RFC3339),
-		},
-	}
+func BlogEditDtoToBlog(dto blog_dto.BlogEditDto, blog model.Blog) model.Blog {
+	blog.Title = dto.Title
+	blog.Content = dto.Content
+	blog.CategoryID = uint(dto.CategoryId)
+	blog.UpdatedAt = time.Now().Format(time.RFC3339)
+
+	return blog
 }
 
 func BlogToBlogListDto(blog model.Blog) blog_dto.BlogListDto {

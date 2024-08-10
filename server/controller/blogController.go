@@ -5,7 +5,9 @@ import (
 	"strconv"
 
 	blog_dto "github.com/emreaknci/peakeyecase/server/dto/blog"
+	"github.com/emreaknci/peakeyecase/server/model"
 	"github.com/emreaknci/peakeyecase/server/service"
+	"github.com/emreaknci/peakeyecase/server/utils/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -76,14 +78,35 @@ func (b *blogController) Delete(c *gin.Context) {
 }
 
 func (b *blogController) Edit(c *gin.Context) {
+
 	var dto blog_dto.BlogEditDto
 	if err := c.ShouldBindJSON(&dto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	response := b.service.Edit(dto)
-	c.JSON(response.StatusCode, response)
+	authorId := GetCurrentUserId(c)
+	if authorId == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+
+	userRole := GetCurrentUserRole(c)
+	if userRole == -1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User role not found"})
+		return
+	}
+
+	if userRole == model.Author.Value() {
+		r := b.service.IsOwnedByUser(dto.Id, uint(authorId))
+		if !r.Status {
+			c.JSON(http.StatusForbidden, response.CustomResponse{StatusCode: http.StatusForbidden, Message: "You are not authorized to edit this blog"})
+			return
+		}
+	}
+	
+	r := b.service.Edit(dto)
+	c.JSON(r.StatusCode, r)
 }
 
 func (b *blogController) GetAll(c *gin.Context) {
@@ -118,20 +141,12 @@ func (b *blogController) GetAllByAuthorId(c *gin.Context) {
 }
 
 func (b *blogController) GetMyBlogs(c *gin.Context) {
-	value, exists := c.Get("userId")
-	if !exists {
+	userId := GetCurrentUserId(c)
+	if userId == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
 	}
 
-	authorIdStr := value.(string)
-
-	authorId, err := strconv.Atoi(authorIdStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	response := b.service.GetAllByAuthorId(uint(authorId))
+	response := b.service.GetAllByAuthorId(userId)
 	c.JSON(response.StatusCode, response)
 }

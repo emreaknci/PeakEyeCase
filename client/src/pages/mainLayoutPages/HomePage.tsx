@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Box, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material'
+import { Avatar, Box, Card, CardContent, CardMedia, Grid, Typography } from '@mui/material'
 import { BlogListDto } from '../../dtos/blogs/blogListDto'
 import Loading from '../../components/common/Loading'
 import AdsComponent from '../../components/common/AdsComponent'
@@ -10,6 +10,7 @@ import BlogList from '../../components/layouts/main/BlogList'
 import { Category } from '../../models/category'
 import CategoryService from '../../services/category.service'
 import { toast } from 'react-toastify'
+import BlogService from '../../services/blog.service'
 
 
 const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
@@ -18,22 +19,27 @@ const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
 
   return (
     <Box sx={{
-      position: 'relative', width: '100%',
-      height: 'auto', display: 'flex',
-      flexDirection: 'column', alignItems: 'center',
+      position: 'relative',
+      width: '100%',
+      height: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
     }}>
       <CardMedia component="img"
-        image={blog.imageUri} alt={blog.title}
+        image={import.meta.env.VITE_IMAGE_URL + "/" + blog.imageUri} alt={blog.title}
         sx={{
-          width: '100%', objectFit: 'overflow',
+          width: '100%', objectFit: 'cover',
           height: { xs: 200, sm: 300, md: 400 },
           borderRadius: 3,
+          cursor: 'pointer'
         }}
+        onClick={() => { navigate(`/blog/${blog.id}`) }}
       />
       <Card variant='outlined'
         sx={{
           position: 'absolute', bottom: { xs: -10, sm: -30 },
-          left: { xs: 10, sm: 20 }, padding: 2,
+          left: { xs: 10, sm: 30 }, padding: 2,
           boxShadow: 3, border: "none", borderRadius: 2,
           width: { xs: '90%', sm: '40%' },
           bgcolor: 'background.default',
@@ -51,14 +57,14 @@ const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
           </Typography>
         </CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <CardMedia component="img" image={blog.authorImageUri} onClick={() => { navigate(`/author/${blog.authorId}`) }}
-            sx={{ width: 40, height: 40, borderRadius: '50%', mr: 2, cursor: 'pointer' }}
+          <Avatar alt={blog.authorFullName} onClick={() => { navigate(`/author/${blog.authorId}`) }}
+            sx={{ width: 40, height: 40, borderRadius: '50%', mr: 2, cursor: 'pointer', backgroundColor: 'primary.main' }}
           />
           <Typography variant="body2" color="text.primary" sx={{ flexGrow: 1, cursor: 'pointer', }} onClick={() => { navigate(`/author/${blog.authorId}`) }}>
             {blog.authorFullName}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {blog.createdAt.toLocaleDateString()}
+            {blog.createdAt}
           </Typography>
         </Box>
       </Card>
@@ -74,27 +80,30 @@ const HomePage = () => {
   const [featuredBlog, setFeaturedBlog] = React.useState<BlogListDto | null>(null);
 
   useEffect(() => {
-    const blog: BlogListDto = {
-      id: 1,
-      title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
-      imageUri: 'https://marketplace.canva.com/EAFHNkHvFsA/1/0/1600w/canva-grey-minimalist-tips-blog-banner-yR0ULIwVxyE.jpg',
-      createdAt: new Date(),
-      categoryId: 1, categoryName: 'Technology',
-      authorId: 1, authorFullName: 'John Doe',
-      authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png-clipart-man-wearing-blue-shirt-illustration-computer-icons-avatar-user-login-avatar-blue-child.png',
-      isDeleted: false,
-      isHidden: false,
-    }
-    setFeaturedBlog(blog)
-    setBlogs([blog, blog, blog, blog, blog, blog, blog, blog, blog])
+    setLoading(true)
+    BlogService.getAll().then(response => {
+      const datas = response.data.data as BlogListDto[]
+      const featuredBlog = datas.slice(0, 1)[0]
+      setFeaturedBlog(featuredBlog)
+
+      const otherBlogs = datas.slice(1)
+      setBlogs(otherBlogs)
+
+      setLoading(false)
+    }).finally(() => {
+      setLoading(false)
+    })
   }, [])
 
   useEffect(() => {
     if (id) {
+      setLoading(true)
       CategoryService.getById(id).then(response => {
         setCategory(response.data.data)
-        setLoading(false)
       })
+        .finally(() => {
+          setLoading(false)
+        })
     }
   }, [id])
 

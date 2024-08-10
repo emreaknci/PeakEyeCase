@@ -5,6 +5,7 @@ import { Button, Grid, Typography } from '@mui/material'
 import DialogComponent from '../../components/common/DialogComponent'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import BlogService from '../../services/blog.service'
 
 const MyBlogs = () => {
     const [blogs, setBlogs] = useState<BlogListDto[]>([])
@@ -15,19 +16,9 @@ const MyBlogs = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const blog: BlogListDto = {
-            id: 1,
-            title: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptates sapiente ex magnam minima nam quibusdam exercitationem eaque, saepe culpa incidunt.',
-            imageUri: 'https://i.pinimg.com/originals/0d/84/8c/0d848c32d1181011fba9fec18e461531.jpg',
-            createdAt: new Date(),
-            categoryId: 1, categoryName: 'Technology',
-            authorId: 1, authorFullName: 'John Doe',
-            authorImageUri: 'https://e7.pngegg.com/pngimages/348/800/png',
-            isDeleted: false,
-            isHidden: false,
-        };
-
-        setBlogs([blog, blog, blog, blog, blog, blog, blog, blog]);
+        BlogService.getMyBlogs().then((response) => {
+            setBlogs(response.data.data);
+        })
     }, [])
 
     const handleDeleteBlog = (blog: BlogListDto) => {

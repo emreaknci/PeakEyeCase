@@ -13,7 +13,6 @@ export const JwtHelper = {
     },
 
     decodedTokenToClaims: (decoded: any): JwtInfo => {
-        console.log(decoded);
         return {
             user: decoded['user'],
             role: decoded['role'],
@@ -28,8 +27,6 @@ export const JwtHelper = {
 
     isAdministrator: (token: string): boolean => {
         const claims = JwtHelper.getTokenInfos(token);
-        console.log(claims.role);
-        console.log(Role.Admin.toString());
         return claims.role.toString() === Role.Admin.toString();
     }
 }

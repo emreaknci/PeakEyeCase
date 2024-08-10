@@ -48,7 +48,7 @@ const BlogCard = (props: BlogCardProps) => {
 
                 <Box sx={{ marginTop: 1 }}>
                     <Typography variant="body2">
-                        <b>Created At:</b> {props.blog.createdAt.toLocaleDateString()}
+                        <b>Created At:</b> {props.blog.createdAt}
                     </Typography>
                 </Box>
             </CardContent>

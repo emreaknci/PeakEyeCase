@@ -31,7 +31,6 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
     (response) => {
-        toast.dismiss();
         
         if (response.config.method !== 'get') {
             const message = response.data.message;
@@ -74,7 +73,6 @@ axiosInstance.interceptors.response.use(
         }
 
         console.log("Response Error: ", error);
-        toast.dismiss();
         toast(message, { type: toastType });
         return Promise.reject(error);
     }

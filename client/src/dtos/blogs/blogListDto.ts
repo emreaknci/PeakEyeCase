@@ -3,7 +3,7 @@ export interface BlogListDto {
     title: string;
     categoryId: number;
     categoryName: string;
-    createdAt: Date;
+    createdAt: string;
     imageUri: string;
     authorFullName: string;
     authorId: number;

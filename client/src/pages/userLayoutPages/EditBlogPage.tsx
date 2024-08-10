@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Typography } from '@mui/material';
+import { Button, Grid, InputLabel, MenuItem, Paper, Select, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Category } from '../../models/category';
 import CustomTextFieldComponent from '../../components/common/CustomTextFieldComponent';
-import ImagePickerComponent from '../../components/common/ImagePickerComponent';
 import ReactQuill from 'react-quill';
-import { Label } from '@mui/icons-material';
 import { BlogEditDto } from '../../dtos/blogs/blogEditDto';
 import { BlogDetailDto } from '../../dtos/blogs/blogDetailDto';
+import BlogService from '../../services/blog.service';
+import CategoryService from '../../services/category.service';
+import { JwtHelper } from '../../utils/security/jwtHelper';
+import StorageService from '../../services/storage.service';
 
 
 const validationSchema = Yup.object({
@@ -29,39 +31,43 @@ const sxValues = {
 };
 
 
-
-
 const EditBlogPage = () => {
-    const {id}= useParams();
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>();
     const [submitted, setSubmitted] = useState(false);
 
     const [blog, setBlog] = useState<BlogDetailDto>();
 
     useEffect(() => {
-        if(!id) return;
-        const blog: BlogDetailDto = {
-            id: 1,
-            title: 'Blog Title',
-            content: '<p> <span style="font-size: 18px;">Quill Rich Text Editor</span> </p> <p> <br> </p> <p>Quill is a free, <a href="https://github.com/quilljs/quill/" target="_blank">open source</a>WYSIWYG editor built for the modern web. With its <a href="http://quilljs.com/docs/modules/" target="_blank">extensible architecture</a>and a <a href="http://quilljs.com/docs/api/" target="_blank">expressive API</a>you can completely customize it to fulfill your needs. Some built in features include:</p> <p> <br> </p> <ul> <li>Fast and lightweight</li> <li>Semantic markup</li> <li>Standardized HTML between browsers</li> <li>Cross browser support including Chrome, Firefox, Safari, and IE 9+</li> </ul> <p> <br> </p> <p> <span style="font-size: 18px;">Downloads</span> </p> <p> <br> </p> <ul> <li> <a href="https://quilljs.com" target="_blank">Quill.js</a>, the free, open source WYSIWYG editor</li> <li> <a href="https://zenoamaro.github.io/react-quill" target="_blank">React-quill</a>, a React component that wraps Quill.js</li> </ul>',
-            categoryId: 2,
-            categoryName: 'Technology',
-            createdAt: new Date(),
-            imageUri: '',
-            authorFullName: 'John Doe',
-            authorId: 1,
-            isDeleted: false,
-            isHidden: false,
-        }
-        setBlog(blog);
-        formik.setValues({
-            id: blog.id,
-            title: blog.title,
-            content: blog.content,
-            categoryId: blog.categoryId,
+        if (!id) return;
+
+        BlogService.getById(id).then((response) => {
+            const data = response.data.data as BlogDetailDto;
+
+            if (data.authorId.toString() !== JwtHelper.getTokenInfos(StorageService.getAccessToken()!).user) {
+                toast.error('You are not authorized to edit this blog');
+                navigate('/me/my-blogs');
+                return;
+            }
+
+            setBlog(data);
+            formik.setValues({
+                id: data.id,
+                title: data.title,
+                content: data.content,
+                categoryId: data.categoryId,
+            });
         });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        const getCategories = async () => {
+            CategoryService.getAll().then((response) => {
+                setCategories(response.data.data);
+            });            
+        }
+        getCategories();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const formik = useFormik({
@@ -76,40 +82,25 @@ const EditBlogPage = () => {
             setSubmitted(true);
             console.log(values);
 
-            const dto:BlogEditDto = {
+            const dto: BlogEditDto = {
                 id: values.id,
                 title: values.title,
                 content: values.content,
                 categoryId: values.categoryId,
             }
+            console.log(dto);
 
-            
+
             await editBlog(dto);
         },
     });
 
-    const editBlog = async (dto:BlogEditDto) => {
+    const editBlog = async (dto: BlogEditDto) => {
         console.log(dto);
-        toast.dismiss();
-        toast.info('Blog edited successfully');
+        BlogService.update(dto).then((response) => {
+            navigate('/me/my-blogs');
+        })
     }
-
-    const getCategories = async () => {
-        const categories: Category[] = [
-            { id: 1, name: 'Technology' },
-            { id: 2, name: 'Fashion' },
-            { id: 3, name: 'Health' },
-            { id: 4, name: 'Sports' },
-            { id: 5, name: 'Education' },
-        ];
-
-        setCategories(categories);
-    }
-
-    useEffect(() => {
-        getCategories();
-    }, []);
-
 
     return (
         <Grid container spacing={3} justifyContent="center">

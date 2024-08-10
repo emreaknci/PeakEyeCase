@@ -9,6 +9,7 @@ type BlogRepository interface {
 	BaseRepository[model.Blog]
 	GetByTitle(title string) (model.Blog, error)
 	GetDetailById(id uint) (model.Blog, error)
+	GetAllWithDetail() ([]model.Blog, error)
 }
 
 type blogRepository struct {
@@ -39,4 +40,14 @@ func (r *blogRepository) GetDetailById(id uint) (model.Blog, error) {
 	}
 
 	return blog, nil
+}
+
+func (r *blogRepository) GetAllWithDetail() ([]model.Blog, error) {
+	var blogs []model.Blog
+
+	if err := r.db.Preload("Category").Preload("User").Find(&blogs).Error; err != nil {
+		return nil, err
+	}
+
+	return blogs, nil
 }

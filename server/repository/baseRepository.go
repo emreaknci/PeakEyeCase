@@ -6,7 +6,7 @@ type BaseRepository[T any] interface {
 	GetAll() ([]T, error)
 	GetByID(id uint) (T, error)
 	GetByFilter(filter func(T) bool) (T, error)
-	GetAllByFilter(filter func(T) bool) ([]T, error)
+	GetAllByFilter(filter func(T) bool, preloadFields ...string) ([]T, error)
 
 	Create(entity T) (T, error)
 	Update(entity T) (T, error)
@@ -49,9 +49,15 @@ func (b *baseRepository[T]) Update(entity T) (T, error) {
 	return entity, result.Error
 }
 
-func (b *baseRepository[T]) GetAllByFilter(filter func(T) bool) ([]T, error) {
+func (b *baseRepository[T]) GetAllByFilter(filter func(T) bool, preloadFields ...string) ([]T, error) {
 	var entities []T
-	result := b.db.Find(&entities)
+
+	query := b.db
+	for _, field := range preloadFields {
+		query = query.Preload(field)
+	}
+
+	result := query.Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -83,4 +89,3 @@ func (b *baseRepository[T]) GetByFilter(filter func(T) bool) (T, error) {
 	var zero T
 	return zero, gorm.ErrRecordNotFound
 }
-
