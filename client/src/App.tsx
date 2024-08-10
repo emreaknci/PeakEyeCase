@@ -11,7 +11,7 @@ import SignInPage from './pages/mainLayoutPages/SignInPage';
 import { AuthContext } from './contexts/AuthContext';
 
 function App() {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, isTokenChecked } = useContext(AuthContext);
   const { theme } = useContext(CustomThemeContext);
   return (
     <>
@@ -20,11 +20,11 @@ function App() {
         <Router>
           <Routes >
             <Route path="/*" element={<MainLayoutRoutes />} />
-            {!isAuthenticated && <>
+            {!isAuthenticated && isTokenChecked && <>
               <Route path="/sign-up" element={<SignUpPage />} />
               <Route path="/sign-in" element={<SignInPage />} />
             </>}
-            {isAuthenticated && <Route path="me/*" element={<UserLayoutRoutes />} />}
+            {isAuthenticated && isTokenChecked && <Route path="me/*" element={<UserLayoutRoutes />} />}
             <Route path="*" element={<MainLayoutRoutes />} />
           </Routes>
         </Router>

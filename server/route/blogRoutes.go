@@ -15,6 +15,8 @@ func BlogRoutes(container *dig.Container, router *gin.Engine) {
 		router.DELETE("/blog/:id", middleware.Auth([]model.Role{model.Admin}), blogController.Delete)
 		router.GET("/blog/get-by-id/:id", blogController.GetById)
 		router.GET("/blog", blogController.GetAll)
+		router.GET("/blog/my-blogs", middleware.Auth([]model.Role{}), blogController.GetMyBlogs)
+		router.GET("/blog/get-all-by-author-id/:authorId", blogController.GetAllByAuthorId)
 	})
 
 	if err != nil {

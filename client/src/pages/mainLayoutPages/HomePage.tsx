@@ -8,6 +8,8 @@ import CategoryButton from '../../components/layouts/main/CategoryButton'
 import { useNavigate, useParams } from 'react-router-dom'
 import BlogList from '../../components/layouts/main/BlogList'
 import { Category } from '../../models/category'
+import CategoryService from '../../services/category.service'
+import { toast } from 'react-toastify'
 
 
 const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
@@ -89,11 +91,10 @@ const HomePage = () => {
 
   useEffect(() => {
     if (id) {
-      const category: Category = {
-        id: 1,
-        name: 'Technology',
-      }
-      setCategory(category)
+      CategoryService.getById(id).then(response => {
+        setCategory(response.data.data)
+        setLoading(false)
+      })
     }
   }, [id])
 
@@ -104,8 +105,8 @@ const HomePage = () => {
           <Loading />
         </Grid> :
         <>
-          {id && <Typography variant='h6' sx={{ fontWeight: 'bold', textAlign: 'center', my: 2 }}>
-            Category: {category?.name} Blogs
+          {id && category && <Typography variant='h6' sx={{ fontWeight: 'bold', textAlign: 'center', my: 2 }}>
+            Category: {category.name} Blogs
           </Typography>}
           {featuredBlog && <FeaturedBlog blog={featuredBlog} />}
           <AdsComponent />

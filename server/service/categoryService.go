@@ -11,6 +11,7 @@ import (
 type CategoryService interface {
 	Add(dto category_dto.CategoryCreationDto) response.CustomResponse
 	GetAll() response.CustomResponse
+	GetById(id uint) response.CustomResponse
 }
 
 type categoryService struct {
@@ -46,4 +47,13 @@ func (c *categoryService) GetAll() response.CustomResponse {
 	}
 
 	return response.CustomResponse{Message: "Categories fetched successfully", Status: true, StatusCode: 200, Data: categories}
+}
+
+func (c *categoryService) GetById(id uint) response.CustomResponse {
+	category, err := c.repo.GetByID(id)
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while getting category", Status: false, StatusCode: 500, Error: err.Error(), Data: nil}
+	}
+
+	return response.CustomResponse{Message: "Category fetched successfully", Status: true, StatusCode: 200, Data: category}
 }

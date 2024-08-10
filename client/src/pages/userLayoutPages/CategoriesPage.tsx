@@ -8,6 +8,7 @@ import CustomTextFieldComponent from '../../components/common/CustomTextFieldCom
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
+import CategoryService from '../../services/category.service';
 
 const NewCategory = ({ categories, setCategories }: { categories: Category[], setCategories: any }) => {
   const validationSchema = Yup.object({
@@ -23,14 +24,19 @@ const NewCategory = ({ categories, setCategories }: { categories: Category[], se
     onSubmit: async (values) => {
       setSubmitted(true);
 
-      toast.success('Category added successfully');
-      const category: Category = {
-        id: categories ? categories.length + 1 : 1,
-        name: values.name
-      }
-      setCategories([...categories!, category]);
+      const checkCategoryExists = categories.find((category) => category.name === values.name);
 
-      formik.resetForm();
+      if (checkCategoryExists) {
+        toast.warning('Category already exists');
+        return;
+      }
+
+      await CategoryService.create(values).then((response) => {
+        const category = response.data.data;
+
+        setCategories([...categories, category]);
+        formik.resetForm();
+      });
     },
   });
 
@@ -71,20 +77,10 @@ const CategoriesPage = () => {
 
   useEffect(() => {
     const getCategories = async () => {
-      const users: Category[] = [
-        { id: 1, name: 'Technology' },
-        { id: 2, name: 'Science' },
-        { id: 3, name: 'Health' },
-        { id: 4, name: 'Business' },
-        { id: 5, name: 'Entertainment' },
-        { id: 6, name: 'Sports' },
-        { id: 7, name: 'Politics' },
-        { id: 8, name: 'Lifestyle' },
-        { id: 9, name: 'Fashion' },
-        { id: 10, name: 'Travel' }
-      ];
-
-      setCategories(users);
+      CategoryService.getAll().then((response) => {
+        console.log(response.data.data)
+        setCategories(response.data.data);
+      })
     }
     getCategories();
   }, []);

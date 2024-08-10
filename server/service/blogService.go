@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	blog_dto "github.com/emreaknci/peakeyecase/server/dto/blog"
+	"github.com/emreaknci/peakeyecase/server/model"
 	"github.com/emreaknci/peakeyecase/server/repository"
 	"github.com/emreaknci/peakeyecase/server/utils/helpers"
 	"github.com/emreaknci/peakeyecase/server/utils/mapping"
@@ -18,6 +19,7 @@ type BlogService interface {
 	Edit(dto blog_dto.BlogEditDto) response.CustomResponse
 	Delete(id uint) response.CustomResponse
 	GetById(id uint) response.CustomResponse
+	GetAllByAuthorId(authorId uint) response.CustomResponse
 	GetAll() response.CustomResponse
 }
 
@@ -87,6 +89,10 @@ func (b *blogService) GetAll() response.CustomResponse {
 		return response.CustomResponse{Message: "An error occurred while getting blogs", Status: false, Error: err.Error(), StatusCode: 500}
 	}
 
+	if len(blogs) == 0 {
+		return response.CustomResponse{Message: "No blogs found", Status: false, Data: []blog_dto.BlogListDto{}, StatusCode: 404}
+	}
+
 	var blogList []blog_dto.BlogListDto
 
 	for _, blog := range blogs {
@@ -105,6 +111,26 @@ func (b *blogService) GetById(id uint) response.CustomResponse {
 	blogDetail := mapping.BlogToBlogDetailDto(blog)
 
 	return response.CustomResponse{Message: "Blog listed successfully", Status: true, Data: blogDetail, StatusCode: 200}
+}
+
+func (b *blogService) GetAllByAuthorId(authorId uint) response.CustomResponse {
+	blogs,err:=b.repo.GetAllByFilter(func(b model.Blog) bool {
+		return b.UserId == authorId
+	})
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
+	}
+
+	if len(blogs) == 0 {
+		return response.CustomResponse{Message: "No blogs found", Status: false, Data: []blog_dto.BlogListDto{}, StatusCode: 404}
+	}
+
+	var blogList []blog_dto.BlogListDto
+	for _, blog := range blogs {
+		blogList = append(blogList, mapping.BlogToBlogListDto(blog))
+	}
+
+	return response.CustomResponse{Message: "Blog listed successfully", Status: true, Data: blogList, StatusCode: 200}
 }
 
 func uploadBlogImage(image *multipart.FileHeader) response.CustomResponse {

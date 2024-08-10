@@ -15,6 +15,8 @@ type BlogController interface {
 	Delete(c *gin.Context)
 	GetById(c *gin.Context)
 	GetAll(c *gin.Context)
+	GetAllByAuthorId(c *gin.Context)
+	GetMyBlogs(c *gin.Context)
 }
 
 type blogController struct {
@@ -99,5 +101,37 @@ func (b *blogController) GetById(c *gin.Context) {
 	}
 
 	response := b.service.GetById(uint(id))
+	c.JSON(response.StatusCode, response)
+}
+
+func (b *blogController) GetAllByAuthorId(c *gin.Context) {
+	authorIdStr := c.Param("authorId")
+
+	authorId, err := strconv.Atoi(authorIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	response := b.service.GetAllByAuthorId(uint(authorId))
+	c.JSON(response.StatusCode, response)
+}
+
+func (b *blogController) GetMyBlogs(c *gin.Context) {
+	value, exists := c.Get("userId")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+
+	authorIdStr := value.(string)
+
+	authorId, err := strconv.Atoi(authorIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	response := b.service.GetAllByAuthorId(uint(authorId))
 	c.JSON(response.StatusCode, response)
 }

@@ -33,9 +33,12 @@ axiosInstance.interceptors.response.use(
     (response) => {
         toast.dismiss();
         
-        const message = response.data.message
-        if (message)
-            toast.success(message);
+        if (response.config.method !== 'get') {
+            const message = response.data.message;
+            if (message) {
+                toast.success(message);
+            }
+        }
 
         return Promise.resolve(response);
     },

@@ -1,6 +1,6 @@
 import Navbar from '../../components/layouts/user/Navbar'
 import { Box } from '@mui/material'
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import ProfilePage from './ProfilePage'
 import MyBlogs from './MyBlogs'
 import AdminsPage from './AdminsPage'
@@ -13,12 +13,19 @@ import BlogsPage from './BlogsPage'
 import CommentsPage from './CommentsPage'
 import MyComments from './MyComments'
 import CategoriesPage from './CategoriesPage'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
 
 
 const UserLayoutRoutes = () => {
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authContext.isAuthenticated && authContext.isTokenChecked) {
+      navigate("/");
+    }
+  }, [authContext.isAuthenticated, authContext.isTokenChecked, navigate])
   return (
     <Box sx={{ display: 'flex' }}>
       <Navbar />

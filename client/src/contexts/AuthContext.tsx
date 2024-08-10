@@ -10,6 +10,7 @@ import { JwtHelper } from '../utils/security/jwtHelper';
 export const AuthContext = createContext({
     currentUser: null as User | null,
     isAuthenticated: false,
+    isTokenChecked: false,
     isAdmin: false,
     signIn: (dto:SignInDto) => { },
     logout: () => { },
@@ -65,8 +66,10 @@ export const AuthProvider = ({ children }: any) => {
         await AuthService.signIn(dto).then(res => {
             StorageService.setAccessToken(res.data.data);
             setIsAuthenticated(true);
+            setIsTokenChecked(true);
         }).catch(err => {
             setIsAuthenticated(false);
+            setIsTokenChecked(true);
         })
     }
 
@@ -82,6 +85,7 @@ export const AuthProvider = ({ children }: any) => {
         <AuthContext.Provider value={{
             currentUser: currentUser as User | null,
             isAuthenticated,
+            isTokenChecked,
             isAdmin,
             signIn,
             logout,

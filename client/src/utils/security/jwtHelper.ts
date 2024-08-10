@@ -24,10 +24,12 @@ export const JwtHelper = {
     getTokenInfos: (token: string): JwtInfo => {
         const decoded = JwtHelper.decode(token);
         return JwtHelper.decodedTokenToClaims(decoded);
-    },    
+    },
 
     isAdministrator: (token: string): boolean => {
         const claims = JwtHelper.getTokenInfos(token);
-        return claims.role === Role.Admin.toString();
+        console.log(claims.role);
+        console.log(Role.Admin.toString());
+        return claims.role.toString() === Role.Admin.toString();
     }
 }
