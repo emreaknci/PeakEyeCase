@@ -4,11 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
+	user_dto "github.com/emreaknci/peakeyecase/server/dto/user"
 	"github.com/emreaknci/peakeyecase/server/service"
 	"github.com/gin-gonic/gin"
 )
 
 type UserController interface {
+	EditUser(c *gin.Context)
 	GetUserById(c *gin.Context)
 	GetUserByEmail(c *gin.Context)
 	GetAllUsers(c *gin.Context)
@@ -21,6 +23,31 @@ type userController struct {
 
 func NewUserController(service service.UserService) UserController {
 	return &userController{service}
+}
+
+func (u *userController) EditUser(c *gin.Context) {
+	var userDto user_dto.UserEditDto
+	if err := c.ShouldBindJSON(&userDto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+
+	userId := GetCurrentUserId(c)
+	if userId == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+
+	userDto.Id = userId
+	
+	response := u.service.Edit(userDto)
+	if !response.Status {
+		c.JSON(response.StatusCode, response)
+		return
+	}
+
+	c.JSON(response.StatusCode, response)
 }
 
 func (u *userController) GetAllByRole(c *gin.Context) {

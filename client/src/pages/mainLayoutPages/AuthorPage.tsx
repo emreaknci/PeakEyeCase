@@ -18,7 +18,7 @@ const AuthorPage = () => {
   useEffect(() => {
     if (!id) return;
 
-    UserService.getById(id).then(response => {
+    UserService.getById(Number(id)).then(response => {
       const defaultSocialLinks: string[] = ['https://www.facebook.com/', 'https://www.twitter.com/',];
       const data = response.data.data as AuthorDetailDto;
       data.socialLinks = defaultSocialLinks

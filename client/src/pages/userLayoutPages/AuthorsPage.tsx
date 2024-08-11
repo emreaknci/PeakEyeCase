@@ -25,7 +25,8 @@ const AuthorsPage = () => {
 
     useEffect(() => {
         const getUsers = async () => {
-            UserService.getByRole(Role.Author).then((response) => {
+            UserService.getAll().then((response) => {
+                console.log(response.data.data);
                 setUsers(response.data.data);
             });
 
@@ -73,21 +74,15 @@ const AuthorsPage = () => {
             <Grid item xs={12} >
                 <Grid container>
                     <Grid item xs={12} sm={9}>  <Typography variant='h4'>Authors</Typography> </Grid>
-
                 </Grid>
             </Grid>
 
             <Grid item xs={12}>
-                <TextField
+                <TextField fullWidth
                     label="Search by ID, Full Name or Email"
                     variant="filled" value={searchText}
-                    onChange={handleSearch} size="medium"
-                    fullWidth
-                    InputProps={{
-                        endAdornment: (
-                            <SearchIcon />
-                        ),
-                    }}
+                    onChange={handleSearch} size="medium"             
+                    InputProps={{ endAdornment: (<SearchIcon />), }}
                 />
             </Grid>
 
@@ -126,8 +121,9 @@ const AuthorsPage = () => {
                                             <Button variant="outlined" color="success"
                                                 onClick={() => handleAuth(user)}
                                                 style={{ borderRadius: "5rem" }}
+                                                disabled={user.role === Role.Admin}
                                             >
-                                                Authorize
+                                                {user.role === Role.Admin ? 'Authorized' : 'Authorize'}
                                             </Button>
                                         </TableCell>
 

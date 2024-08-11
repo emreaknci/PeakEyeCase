@@ -1,10 +1,13 @@
 import { Button, Container, Grid, Paper, Typography } from '@mui/material'
 import { UserDto } from '../../dtos/users/userDto'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CustomTextFieldComponent from '../../components/common/CustomTextFieldComponent';
+import { AuthContext } from '../../contexts/AuthContext';
+import UserService from '../../services/user.service';
+import { UserEditDto } from '../../dtos/users/userEditDto';
 
 const validationSchema = Yup.object({
   fullName: Yup.string().required('Full Name is required'),
@@ -14,21 +17,19 @@ const validationSchema = Yup.object({
 });
 
 const ProfilePage = () => {
+  const authContext=useContext(AuthContext)
   const [currentUser, setCurrentUser] = useState<UserDto | null>(null)
   const [submitted, setSubmitted] = useState(false);
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState("My Profile");
 
   useEffect(() => {
-    const user: UserDto = {
-      id: 1,
-      fullName: 'John Doe',
-      jobTitle: 'Software Engineer',
-      email: 'john@doe.com',
-      about: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
-    }
-    setCurrentUser(user)
-  }, [])
+    if (!authContext.currentUserId) return
+    UserService.getById(authContext.currentUserId).then(response => {
+      setCurrentUser(response.data.data)
+    })
+
+  }, [authContext.currentUserId])
 
   const formik = useFormik({
     initialValues: {
@@ -40,7 +41,20 @@ const ProfilePage = () => {
     validationSchema,
     onSubmit: (values) => {
       setSubmitted(true);
-      console.log(values)
+
+      const dto:UserEditDto = {
+        fullName: values.fullName,
+        jobTitle: values.jobTitle,
+        email: values.email,
+        about: values.about,
+      }
+
+      UserService.edit(dto).then(response => {
+        console.log(response.data)
+        setEditing(false);
+        setTitle("Profile Page");
+        setCurrentUser(response.data.data);
+      })
     },
   });
 
@@ -54,6 +68,7 @@ const ProfilePage = () => {
       about: currentUser?.about || '',
     });
   }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editing) {

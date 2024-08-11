@@ -12,6 +12,7 @@ type AuthController interface {
 	SignIn(c *gin.Context)
 	SignUp(c *gin.Context)
 	AssignRole(c *gin.Context)
+	ChangePassword(c *gin.Context)
 }
 
 type authController struct {
@@ -52,5 +53,24 @@ func (a *authController) AssignRole(c *gin.Context) {
 	}
 
 	response := a.service.AssignRole(dto)
+	c.JSON(response.StatusCode, response)
+}
+
+func (a *authController) ChangePassword(c *gin.Context) {
+	var dto user_dto.ChangePasswordDto
+	if err := c.ShouldBindJSON(&dto); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userId := GetCurrentUserId(c)
+	if userId == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+
+	dto.UserId = userId
+
+	response := a.service.ChangePassword(dto)
 	c.JSON(response.StatusCode, response)
 }

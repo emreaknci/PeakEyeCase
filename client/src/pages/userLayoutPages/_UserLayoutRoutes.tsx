@@ -15,6 +15,7 @@ import MyComments from './MyComments'
 import CategoriesPage from './CategoriesPage'
 import { useContext, useEffect } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
+import ChangePasswordPage from './ChangePasswordPage'
 
 
 const UserLayoutRoutes = () => {
@@ -50,6 +51,7 @@ const UserLayoutRoutes = () => {
           <Route path="/my-blogs/edit-blog/:id" element={<EditBlogPage />} />
           <Route path="/my-comments" element={<MyComments />} />
           <Route path="/my-profile" element={<ProfilePage />} />
+          <Route path="/change-password" element={<ChangePasswordPage />} />
 
           <Route path="*" element={<Navigate to={"/me"} />} />
         </Routes>

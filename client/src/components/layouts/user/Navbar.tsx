@@ -27,8 +27,7 @@ import CommentIcon from '@mui/icons-material/Comment';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CategoryIcon from '@mui/icons-material/Category';
 import { AuthContext } from '../../../contexts/AuthContext';
-
-
+import LockIcon from '@mui/icons-material/Lock';
 
 const drawerWidth = 240;
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -102,7 +101,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const userIconMap = [
   { name: 'My Profile', icon: <AccountCircle />, link: '' },
   { name: 'My Blogs', icon: <BorderColorIcon />, link: 'my-blogs' },
-  { name: 'My Comments', icon: <CommentIcon />, link: 'my-comments' }
+  { name: 'My Comments', icon: <CommentIcon />, link: 'my-comments' },
+  { name: 'Settings', icon: <LockIcon />, link: 'change-password' },
+
 ];
 
 const adminIconMap = [

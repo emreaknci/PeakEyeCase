@@ -10,6 +10,7 @@ import (
 
 func UserRoutes(container *dig.Container, router *gin.Engine) {
 	err := container.Invoke(func(userController controller.UserController) {
+		router.PUT("/user", middleware.Auth([]model.Role{}), userController.EditUser)
 		router.GET("/user", middleware.Auth([]model.Role{model.Admin}), userController.GetAllUsers)
 		router.GET("/user/get-by-role/:role", middleware.Auth([]model.Role{model.Admin}), userController.GetAllByRole)
 		router.GET("/user/get-by-email/:email", userController.GetUserByEmail)
