@@ -27,7 +27,7 @@ const BlogList = (props: BlogListProps) => {
       {props.blogs && props.blogs.length === 0 &&
         <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Typography variant='h6'>
-            No more blogs found in this category. Log in or sign up to write a blog now!
+            No more blogs found. Log in or sign up to write a blog now!
           </Typography>
         </Grid>
       }

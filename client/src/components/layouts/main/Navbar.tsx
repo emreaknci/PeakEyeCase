@@ -7,6 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ThemeSwitcher from '../../common/ToggleThemeSwitch';
 import { AccountCircle } from '@mui/icons-material';
 import { AuthContext } from '../../../contexts/AuthContext';
+import { SearchContext } from '../../../contexts/SearchTermContext';
 
 const NavigationButtons = () => (
   <Box sx={{
@@ -41,6 +42,7 @@ const MediumScreenAppBar = ({ isMediumScreen, handleDrawerToggle }: { isMediumSc
 );
 
 const Navbar = () => {
+  const searchContext = useContext(SearchContext)
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -53,7 +55,9 @@ const Navbar = () => {
   const handleMenu = (event: any) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const handleDrawerToggle = () => setIsMediumScreen(prev => !prev);
-
+  const handleChange = (e: any) => {
+    searchContext.setSearchTerm(e.target.value);
+  };
 
   return (
     <>
@@ -90,8 +94,15 @@ const Navbar = () => {
                   <InputBase placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
                     sx={{ ml: 1, flex: 1 }}
+                    value={searchContext.searchTerm}
+                    onChange={handleChange}
                   />
-                  <SearchIcon />
+                  <IconButton type="submit" aria-label="search" onClick={()=>{
+                    searchContext.setIsClicked(true);
+                  }}>
+                    <SearchIcon />
+                  </IconButton>
+
                 </Box>
               )}
               <ThemeSwitcher />

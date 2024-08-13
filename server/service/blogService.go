@@ -20,7 +20,7 @@ type BlogService interface {
 	Delete(id uint) response.CustomResponse
 	GetById(id uint) response.CustomResponse
 	GetAllByAuthorId(authorId uint) response.CustomResponse
-	GetAll() response.CustomResponse
+	GetAllBySearchTerm(searchTerm string) response.CustomResponse
 	IsOwnedByUser(blogId uint, userId uint) response.CustomResponse
 	GetAllByCategory(categoryId uint) response.CustomResponse
 }
@@ -82,7 +82,7 @@ func (b *blogService) Edit(dto blog_dto.BlogEditDto) response.CustomResponse {
 		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
 	}
 
-	blog, err = b.repo.Update(mapping.BlogEditDtoToBlog(dto,blog))
+	blog, err = b.repo.Update(mapping.BlogEditDtoToBlog(dto, blog))
 	if err != nil {
 		return response.CustomResponse{Message: "An error occurred while updating blog", Status: false, Error: err.Error(), StatusCode: 500}
 	}
@@ -90,8 +90,8 @@ func (b *blogService) Edit(dto blog_dto.BlogEditDto) response.CustomResponse {
 	return response.CustomResponse{Message: "Blog updated successfully", Status: true, Data: blog, StatusCode: 200}
 }
 
-func (b *blogService) GetAll() response.CustomResponse {
-	blogs, err := b.repo.GetAllWithDetail()
+func (b *blogService) GetAllBySearchTerm(searchTerm string) response.CustomResponse {
+	blogs, err := b.repo.GetAllWithDetail(searchTerm)
 	if err != nil {
 		return response.CustomResponse{Message: "An error occurred while getting blogs", Status: false, Error: err.Error(), StatusCode: 500}
 	}
@@ -172,8 +172,6 @@ func (b *blogService) GetAllByCategory(categoryId uint) response.CustomResponse 
 
 	return response.CustomResponse{Message: "Blog listed successfully", Status: true, Data: blogList, StatusCode: 200}
 }
-
-
 
 func uploadBlogImage(image *multipart.FileHeader) response.CustomResponse {
 	file, err := image.Open()

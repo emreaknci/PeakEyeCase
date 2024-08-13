@@ -6,6 +6,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-quill/dist/quill.snow.css';
 import { AuthProvider } from './contexts/AuthContext.tsx'
+import { SearchProvider } from './contexts/SearchTermContext.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
@@ -22,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     />
     <AuthProvider>
       <CustomThemeProvider>
-        <App />
+          <App />
       </CustomThemeProvider>
     </AuthProvider>
   </>

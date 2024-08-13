@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,7 +17,7 @@ type BlogController interface {
 	Edit(c *gin.Context)
 	Delete(c *gin.Context)
 	GetById(c *gin.Context)
-	GetAll(c *gin.Context)
+	GetAllBySearchTerm(c *gin.Context)
 	GetAllByAuthorId(c *gin.Context)
 	GetMyBlogs(c *gin.Context)
 	GetByCategoryId(c *gin.Context)
@@ -105,13 +106,15 @@ func (b *blogController) Edit(c *gin.Context) {
 			return
 		}
 	}
-	
+
 	r := b.service.Edit(dto)
 	c.JSON(r.StatusCode, r)
 }
 
-func (b *blogController) GetAll(c *gin.Context) {
-	response := b.service.GetAll()
+func (b *blogController) GetAllBySearchTerm(c *gin.Context) {
+	fmt.Println("c.Params",c.Params)
+	searchTerm := c.Param("searchTerm")
+	response := b.service.GetAllBySearchTerm(searchTerm)
 	c.JSON(response.StatusCode, response)
 }
 

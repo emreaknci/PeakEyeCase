@@ -9,6 +9,7 @@ import UserLayoutRoutes from './pages/userLayoutPages/_UserLayoutRoutes';
 import SignUpPage from './pages/mainLayoutPages/SignUpPage';
 import SignInPage from './pages/mainLayoutPages/SignInPage';
 import { AuthContext } from './contexts/AuthContext';
+import { SearchProvider } from './contexts/SearchTermContext';
 
 function App() {
   const { isAuthenticated, isTokenChecked } = useContext(AuthContext);
@@ -18,15 +19,18 @@ function App() {
       <ThemeProvider theme={theme ? darkTheme : lightTheme}>
         <CssBaseline />
         <Router>
-          <Routes >
-            <Route path="/*" element={<MainLayoutRoutes />} />
-            {!isAuthenticated && isTokenChecked && <>
-              <Route path="/sign-up" element={<SignUpPage />} />
-              <Route path="/sign-in" element={<SignInPage />} />
-            </>}
-            {isAuthenticated && isTokenChecked && <Route path="me/*" element={<UserLayoutRoutes />} />}
-            <Route path="*" element={<MainLayoutRoutes />} />
-          </Routes>
+          <SearchProvider>
+            <Routes >
+
+              <Route path="/*" element={<MainLayoutRoutes />} />
+              {!isAuthenticated && isTokenChecked && <>
+                <Route path="/sign-up" element={<SignUpPage />} />
+                <Route path="/sign-in" element={<SignInPage />} />
+              </>}
+              {isAuthenticated && isTokenChecked && <Route path="me/*" element={<UserLayoutRoutes />} />}
+              <Route path="*" element={<MainLayoutRoutes />} />
+            </Routes>
+          </SearchProvider>
         </Router>
       </ThemeProvider>
     </>

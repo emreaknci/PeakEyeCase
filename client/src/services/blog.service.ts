@@ -1,10 +1,14 @@
 
-import { BlogCreationDto } from '../dtos/blogs/blogCreationDto';
 import { BlogEditDto } from '../dtos/blogs/blogEditDto';
 import BaseService from './_base.service';
 
 const BlogService = {
-    getAll: async () => await BaseService.get('/blog'),
+    getAll: async (searchTerm?: string) =>{
+        if(searchTerm){
+            return await BaseService.get(`/blog/${searchTerm}`);
+        }
+        return await BaseService.get('/blog');
+    },
     getAllByCategoryId: async (categoryId: string) => await BaseService.get(`/blog/get-by-category/${categoryId}`),
     getMyBlogs: async () => await BaseService.get('/blog/my-blogs'),
     getAllByAuthorId: async (authorId: string) => await BaseService.get(`/blog/get-all-by-author-id/${authorId}`),

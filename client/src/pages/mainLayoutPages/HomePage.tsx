@@ -11,6 +11,7 @@ import { Category } from '../../models/category'
 import CategoryService from '../../services/category.service'
 import { toast } from 'react-toastify'
 import BlogService from '../../services/blog.service'
+import { SearchContext } from '../../contexts/SearchTermContext'
 
 
 const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
@@ -72,24 +73,27 @@ const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
 };
 
 const HomePage = () => {
+  const searchContext = useContext(SearchContext)
   const [loading, setLoading] = React.useState<boolean>(false);
   const { id } = useParams()
   const [category, setCategory] = React.useState<Category | null>(null)
   const [blogs, setBlogs] = React.useState<BlogListDto[]>([]);
   const [featuredBlog, setFeaturedBlog] = React.useState<BlogListDto | null>(null);
+  const [searched, setSearched] = React.useState<boolean>(false)
 
+  const setData = (blogs: BlogListDto[]) => {
+    const featuredBlog = blogs[0]
+    setFeaturedBlog(featuredBlog)
+    blogs.shift()
+    setBlogs(blogs)
+  }
   useEffect(() => {
-    const setData = (blogs: BlogListDto[]) => {
-      const featuredBlog = blogs[0]
-      setFeaturedBlog(featuredBlog)
-      blogs.shift()
-      setBlogs(blogs)
-
-    }
     const getBlogs = () => {
       setLoading(true)
       BlogService.getAll().then(response => {
+        console.log(response.data.data)
         setData(response.data.data)
+        searchContext.setIsClicked(false)
       }).finally(() => {
         setLoading(false)
       })
@@ -122,8 +126,26 @@ const HomePage = () => {
     }
   }, [id])
 
+  useEffect(() => {
+    if (searchContext.isClicked && searchContext.searchTerm != '') {
+      setLoading(true)
+      BlogService.getAll(searchContext.searchTerm).then(response => {
+        console.log(response.data.data)
+        setData(response.data.data)
+        setSearched(true)
+      }).catch(error => {
+        toast.error(`No blogs found for "${searchContext.searchTerm}"`)
+      }).finally(() => {
+        setLoading(false)
+      })
+
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchContext.isClicked])
+
   return (
     <>
+
       {loading ?
         <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
           <Loading />
@@ -131,6 +153,9 @@ const HomePage = () => {
         <>
           {id && category && <Typography variant='h6' sx={{ fontWeight: 'bold', textAlign: 'center', my: 2 }}>
             Category: {category.name} Blogs
+          </Typography>}
+          {searched && <Typography variant='h6' sx={{ fontWeight: 'bold', textAlign: 'center', my: 2 }}>
+            Search Results for: {searchContext.searchTerm}
           </Typography>}
           {featuredBlog && <FeaturedBlog blog={featuredBlog} />}
           <AdsComponent />
