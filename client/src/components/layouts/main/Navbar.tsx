@@ -10,12 +10,7 @@ import { AuthContext } from '../../../contexts/AuthContext';
 import { SearchContext } from '../../../contexts/SearchTermContext';
 
 const NavigationButtons = () => (
-  <Box sx={{
-    display: 'flex', gap: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 1,
-  }}>
+  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'center', flexGrow: 1, }}>
     <Button component={Link} to="/" color="inherit">Home</Button>
     <Button component={Link} to="/blog" color="inherit">Blog</Button>
     <Button component={Link} to="/contact" color="inherit">Contact</Button>
@@ -97,7 +92,7 @@ const Navbar = () => {
                     value={searchContext.searchTerm}
                     onChange={handleChange}
                   />
-                  <IconButton type="submit" aria-label="search" onClick={()=>{
+                  <IconButton type="submit" aria-label="search" onClick={() => {
                     searchContext.setIsClicked(true);
                   }}>
                     <SearchIcon />

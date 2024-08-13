@@ -130,7 +130,6 @@ const HomePage = () => {
     if (searchContext.isClicked && searchContext.searchTerm != '') {
       setLoading(true)
       BlogService.getAll(searchContext.searchTerm).then(response => {
-        console.log(response.data.data)
         setData(response.data.data)
         setSearched(true)
       }).catch(error => {
