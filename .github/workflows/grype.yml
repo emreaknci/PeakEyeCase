@@ -24,10 +24,12 @@ jobs:
 
       - name: Run Grype Scans
         run: |
-          grype webapp -o json > webapp.report.json
+          grype webapp -o json > webapp.report.json &&
+          grype webapi -o json > webapi.report.json
       - name: Upload Grype Reports
         uses: actions/upload-artifact@v4.3.4
         with:
-          name: grype-reports
+          name: reports
           path: |
             webapp.report.json
+            webapi.report.json

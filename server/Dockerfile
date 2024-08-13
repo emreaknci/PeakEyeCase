@@ -16,7 +16,7 @@ WORKDIR /root/
 COPY --from=builder /app/main .
 COPY --from=builder /app/.env ./
 COPY --from=builder /app/seedDataUploads /root/seedDataUploads/
-COPY --from=builder /app/uploads /root/uploads/
+# COPY --from=builder /app/uploads /root/uploads/
 
 
 CMD ["./main"]
