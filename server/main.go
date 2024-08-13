@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/emreaknci/peakeyecase/server/config"
@@ -27,7 +29,7 @@ func main() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // React app
+		AllowOrigins:     []string{fmt.Sprintf("http://localhost:%v", os.Getenv("WEB_APP_PORT"))}, // react app port
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers"},
 		ExposeHeaders:    []string{"Content-Length"},

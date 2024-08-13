@@ -3,6 +3,8 @@ import { styled } from '@mui/system';
 import EmailIcon from '@mui/icons-material/Email';
 import { useNavigate } from 'react-router-dom';
 import { Category } from '../../../models/category';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const FooterContainer = styled(Box)(({ theme }) => ({
   borderTop: `1px solid ${theme.palette.divider}`,
@@ -31,6 +33,24 @@ const FooterLink = styled(Link)(({ theme }) => ({
 
 const Footer = ({ categories }: { categories: Category[] }) => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('johndoe@peakeye.com');
+
+  const handleEmailSubscription = () => {
+    toast.dismiss();
+    if (!email) {
+      toast.info('Please enter your email address');
+      return;
+    }
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+    if (!emailRegex.test(email)) {
+      toast.info('Please enter a valid email address');
+      return;
+    }
+
+    toast.success('Subscribed successfully');
+    setEmail("");
+  }
   return (
     <FooterContainer>
       <Container>
@@ -60,10 +80,10 @@ const Footer = ({ categories }: { categories: Category[] }) => {
                   <Typography variant="h6" gutterBottom>
                     Quick Link
                   </Typography>
-                  <FooterLink onClick={() => navigate(`/`)}>Home</FooterLink>
-                  <FooterLink onClick={() => navigate(`/`)}>About</FooterLink>
-                  <FooterLink onClick={() => navigate(`/contact`)}>Contact</FooterLink>
-                  <FooterLink onClick={() => navigate(`/blog`)}>Blog</FooterLink>
+                  <FooterLink onClick={() => navigate("/")}>Home</FooterLink>
+                  <FooterLink onClick={() => navigate("/")}>About</FooterLink>
+                  <FooterLink onClick={() => navigate("/contact")}>Contact</FooterLink>
+                  <FooterLink onClick={() => navigate("/blog")}>Blog</FooterLink>
 
 
                 </FooterSection>
@@ -96,8 +116,12 @@ const Footer = ({ categories }: { categories: Category[] }) => {
                 Get blog articles and offers via email
               </Typography>
               <TextField variant="standard"
+                type='email'
                 placeholder="Your Email" size="small"
                 fullWidth sx={{ mb: 2 }}
+                value={email}
+                autoComplete='off'
+                onChange={(e) => setEmail(e.target.value)}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -106,7 +130,7 @@ const Footer = ({ categories }: { categories: Category[] }) => {
                   ),
                 }}
               />
-              <Button variant="contained" fullWidth sx={{
+              <Button onClick={handleEmailSubscription} variant="contained" fullWidth sx={{
                 bgcolor: "blue", color: "white",
                 '&:hover': { bgcolor: '#0d47a1', }
               }}>

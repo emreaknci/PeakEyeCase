@@ -115,7 +115,6 @@ const HomePage = () => {
         navigate('/')
         toast.info('No blogs found for this category')
       }).finally(() => {
-        searchContext.setSearchTerm('')
         setLoading(false)
       })
 
@@ -159,7 +158,6 @@ const HomePage = () => {
       }).catch(error => {
         toast.error(`No blogs found for "${searchContext.searchTerm}"`)
       }).finally(() => {
-        searchContext.setSearchTerm('')
         setLoading(false)
       })
 

@@ -22,7 +22,7 @@ const SignInPage = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: 'emreakinci@gmail.com',
+      email: 'admin@admin.com',
       password: '123456',
     },
     validationSchema,
