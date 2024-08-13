@@ -12,8 +12,9 @@ func BlogRoutes(container *dig.Container, router *gin.Engine) {
 	err := container.Invoke(func(blogController controller.BlogController) {
 		router.POST("/blog", middleware.Auth([]model.Role{}), blogController.Add)
 		router.PUT("/blog", middleware.Auth([]model.Role{}), blogController.Edit)
-		router.DELETE("/blog/:id", middleware.Auth([]model.Role{model.Admin}), blogController.Delete)
+		router.DELETE("/blog/:id", middleware.Auth([]model.Role{}), blogController.Delete)
 		router.GET("/blog/get-by-id/:id", blogController.GetById)
+		router.PUT("/blog/change-visibility/:id",middleware.Auth([]model.Role{}), blogController.ChangeBlogVisibility)
 		router.GET("/blog/get-by-category/:id", blogController.GetByCategoryId)
 		router.GET("/blog", blogController.GetAllBySearchTerm)
 		router.GET("/blog/:searchTerm", blogController.GetAllBySearchTerm)

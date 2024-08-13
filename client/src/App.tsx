@@ -20,16 +20,25 @@ function App() {
         <CssBaseline />
         <Router>
           <SearchProvider>
-            <Routes >
-
-              <Route path="/*" element={<MainLayoutRoutes />} />
-              {!isAuthenticated && isTokenChecked && <>
-                <Route path="/sign-up" element={<SignUpPage />} />
-                <Route path="/sign-in" element={<SignInPage />} />
-              </>}
-              {isAuthenticated && isTokenChecked && <Route path="me/*" element={<UserLayoutRoutes />} />}
-              <Route path="*" element={<MainLayoutRoutes />} />
+            <Routes>
+              {isTokenChecked && (
+                <>
+                  <Route path="/*" element={<MainLayoutRoutes />} />
+                  {isAuthenticated ? (
+                    <>
+                      <Route path="me/*" element={<UserLayoutRoutes />} />
+                    </>
+                  ) : (
+                    <>
+                      <Route path="/sign-up" element={<SignUpPage />} />
+                      <Route path="/sign-in" element={<SignInPage />} />
+                    </>
+                  )}
+                  <Route path="*" element={<MainLayoutRoutes />} />
+                </>
+              )}
             </Routes>
+
           </SearchProvider>
         </Router>
       </ThemeProvider>

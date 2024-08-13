@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { BlogDetailDto } from '../../dtos/blogs/blogDetailDto';
 import Loading from '../../components/common/Loading';
@@ -6,8 +6,11 @@ import { Avatar, Box, Button, CardMedia, Divider, Grid, Typography } from '@mui/
 import CategoryButton from '../../components/layouts/main/CategoryButton';
 import Comments from '../../components/layouts/main/Comments';
 import BlogService from '../../services/blog.service';
+import { AuthContext } from '../../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const BlogDetailPage = () => {
+  const authContext = useContext(AuthContext)
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [blog, setBlog] = useState<BlogDetailDto | null>(null);
@@ -16,21 +19,40 @@ const BlogDetailPage = () => {
 
   useEffect(() => {
     const getBlogById = async () => {
-      setLoading(true);
-      BlogService.getById(id!).then(response => {
-        console.log(response.data.data.content)
-        setBlog(response.data.data)
-      }).finally(() => {
-        setLoading(false)
-      })
+      try {
+        setLoading(true);
 
+        const response = await BlogService.getById(id!);
+        const data = response.data.data as BlogDetailDto;
+        setBlog(data);
 
-    }
+        const isAdmin = authContext.isAdmin;
+        const isAuthor = authContext.currentUserId === data.authorId;
+
+        if (data.isHidden) {
+          if (!isAdmin && !isAuthor) {
+            navigate('/');
+            toast.error('Blog not found');
+            return;
+          }
+        }
+
+        if (data.isDeleted && !isAdmin) {
+          navigate('/');
+          toast.error('Blog not found');
+          return;
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching the blog:', error);
+        toast.error('An error occurred while fetching the blog');
+        navigate('/');
+      } finally {
+        setLoading(false);
+      }
+    };
     if (!id) return;
 
     getBlogById();
-
-
   }, [id])
 
   return (

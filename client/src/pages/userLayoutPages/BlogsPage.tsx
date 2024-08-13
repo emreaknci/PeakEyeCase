@@ -20,8 +20,6 @@ const BlogsPage = () => {
     const [openAlert, setOpenAlert] = useState(false);
     const [alertText, setAlertText] = useState('');
 
-
-
     const [currentBlog, setCurrentBlog] = useState<BlogListDto | undefined>(undefined);
     const [anchorEl, setAnchorEl] = useState(null);
     const handleMenuClick = (e: any, blog: BlogListDto) => {
@@ -88,17 +86,18 @@ const BlogsPage = () => {
 
     const handleConfirm = async () => {
         toast.dismiss();
-        toast.success(`Blog deleted successfully`);
         setOpenAlert(false);
 
-        if (currentBlog) {
-            const updatedBlogs = blogs?.map((blog) => {
-                if (blog.id === currentBlog.id) {
-                    return { ...blog, isDeleted: true };
-                }
-                return blog;
-            });
-            setBlogs(updatedBlogs);
+        if (currentBlog && !currentBlog.isDeleted) {
+            BlogService.delete(currentBlog.id).then(() => {
+                const filteredBlogs = blogs?.map((blog) => {
+                    if (blog.id === currentBlog.id) {
+                        return { ...blog, isDeleted: true };
+                    }
+                    return blog;
+                });
+                setBlogs(filteredBlogs);
+            })
         }
 
         setCurrentBlog(undefined);
@@ -170,7 +169,7 @@ const BlogsPage = () => {
                                                     Actions
                                                 </Button>
                                                 <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} >
-                                                    <MenuItem onClick={() => navigate(`/blog/${currentBlog?.id}`)}>View Blog</MenuItem>
+                                                     <MenuItem onClick={() => navigate(`/blog/${currentBlog?.id}`)}>View Blog</MenuItem>
                                                     <MenuItem onClick={() => navigate(`/me/authors/${currentBlog?.authorId}`)}>View Author</MenuItem>
                                                     <MenuItem sx={{ color: "red" }} onClick={() => handleDelete(currentBlog)}>Delete</MenuItem>
                                                 </Menu>

@@ -17,7 +17,8 @@ const MainLayoutRoutes = () => {
 
   useEffect(() => {
     CategoryService.getAll().then(response => {
-      setCategories(response.data.data);
+      const data=response.data.data as Category[];
+      setCategories(response.data.data.filter((c:Category)=>!c.isDeleted));
     });
   }, []);
   return (

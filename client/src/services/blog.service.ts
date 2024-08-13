@@ -16,7 +16,8 @@ const BlogService = {
     get: async (id: string) => await BaseService.get(`/blog/${id}`),
     create: async (formData: FormData) => await BaseService.post('/blog', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
     update: async (dto: BlogEditDto) => await BaseService.put(`/blog`, dto),
-    delete: async (id: string) => await BaseService.delete(`/blog/${id}`),
+    delete: async (id: number) => await BaseService.delete(`/blog/${id}`),
+    changeVisibility: async (id: number) => await BaseService.put(`/blog/change-visibility/${id}`),
 }
 
 export default BlogService;

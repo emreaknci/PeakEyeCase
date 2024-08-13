@@ -22,11 +22,11 @@ const UserLayoutRoutes = () => {
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!authContext.isAuthenticated && authContext.isTokenChecked) {
-      navigate("/");
-    }
-  }, [authContext.isAuthenticated, authContext.isTokenChecked, navigate])
+  // useEffect(() => {
+  //   if (!authContext.isAuthenticated && authContext.isTokenChecked) {
+  //     navigate("/");
+  //   }
+  // }, [authContext.isAuthenticated, authContext.isTokenChecked, navigate])
   return (
     <Box sx={{ display: 'flex' }}>
       <Navbar />

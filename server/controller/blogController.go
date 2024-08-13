@@ -21,6 +21,7 @@ type BlogController interface {
 	GetAllByAuthorId(c *gin.Context)
 	GetMyBlogs(c *gin.Context)
 	GetByCategoryId(c *gin.Context)
+	ChangeBlogVisibility(c *gin.Context)
 }
 
 type blogController struct {
@@ -75,6 +76,26 @@ func (b *blogController) Delete(c *gin.Context) {
 		return
 	}
 
+	authorId := GetCurrentUserId(c)
+	if authorId == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+
+	userRole := GetCurrentUserRole(c)
+	if userRole == -1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User role not found"})
+		return
+	}
+
+	if userRole == model.Author.Value() {
+		r := b.service.IsOwnedByUser(uint(id), uint(authorId))
+		if !r.Status {
+			c.JSON(http.StatusForbidden, response.CustomResponse{StatusCode: http.StatusForbidden, Message: "You are not authorized to edit this blog"})
+			return
+		}
+	}
+
 	response := b.service.Delete(uint(id))
 	c.JSON(response.StatusCode, response)
 }
@@ -112,7 +133,7 @@ func (b *blogController) Edit(c *gin.Context) {
 }
 
 func (b *blogController) GetAllBySearchTerm(c *gin.Context) {
-	fmt.Println("c.Params",c.Params)
+	fmt.Println("c.Params", c.Params)
 	searchTerm := c.Param("searchTerm")
 	response := b.service.GetAllBySearchTerm(searchTerm)
 	c.JSON(response.StatusCode, response)
@@ -165,5 +186,38 @@ func (b *blogController) GetByCategoryId(c *gin.Context) {
 	}
 
 	response := b.service.GetAllByCategory(uint(categoryId))
+	c.JSON(response.StatusCode, response)
+}
+
+func (b *blogController) ChangeBlogVisibility(c *gin.Context) {
+	idStr := c.Param("id")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	authorId := GetCurrentUserId(c)
+	if authorId == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+
+	userRole := GetCurrentUserRole(c)
+	if userRole == -1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User role not found"})
+		return
+	}
+
+	if userRole == model.Author.Value() {
+		r := b.service.IsOwnedByUser(uint(id), uint(authorId))
+		if !r.Status {
+			c.JSON(http.StatusForbidden, response.CustomResponse{StatusCode: http.StatusForbidden, Message: "You are not authorized to edit this blog"})
+			return
+		}
+	}
+
+	response := b.service.ChangeBlogVisibility(uint(id))
 	c.JSON(response.StatusCode, response)
 }

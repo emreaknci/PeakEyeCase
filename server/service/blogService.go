@@ -23,6 +23,7 @@ type BlogService interface {
 	GetAllBySearchTerm(searchTerm string) response.CustomResponse
 	IsOwnedByUser(blogId uint, userId uint) response.CustomResponse
 	GetAllByCategory(categoryId uint) response.CustomResponse
+	ChangeBlogVisibility(blogId uint) response.CustomResponse
 }
 
 type blogService struct {
@@ -63,7 +64,13 @@ func (b *blogService) Add(dto blog_dto.BlogCreationDto) response.CustomResponse 
 }
 
 func (b *blogService) Delete(id uint) response.CustomResponse {
-	err := b.repo.Delete(id)
+	blog, err := b.repo.GetByID(id)
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
+	}
+
+	blog.BaseModel.IsDeleted = true
+	_, err = b.repo.Update(blog)
 	if err != nil {
 		return response.CustomResponse{Message: "An error occurred while deleting blog", Status: false, Error: err.Error(), StatusCode: 500}
 	}
@@ -171,6 +178,21 @@ func (b *blogService) GetAllByCategory(categoryId uint) response.CustomResponse 
 	}
 
 	return response.CustomResponse{Message: "Blog listed successfully", Status: true, Data: blogList, StatusCode: 200}
+}
+
+func (b *blogService) ChangeBlogVisibility(blogId uint) response.CustomResponse {
+	blog, err := b.repo.GetByID(blogId)
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while getting blog", Status: false, Error: err.Error(), StatusCode: 500}
+	}
+
+	blog.IsHidden = !blog.IsHidden
+	blog, err = b.repo.Update(blog)
+	if err != nil {
+		return response.CustomResponse{Message: "An error occurred while changing blog visibility", Status: false, Error: err.Error(), StatusCode: 500}
+	}
+
+	return response.CustomResponse{Message: "Blog visibility changed successfully", Status: true, Data: blog, StatusCode: 200}
 }
 
 func uploadBlogImage(image *multipart.FileHeader) response.CustomResponse {

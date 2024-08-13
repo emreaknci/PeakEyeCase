@@ -17,7 +17,9 @@ const MyBlogs = () => {
 
     useEffect(() => {
         BlogService.getMyBlogs().then((response) => {
-            setBlogs(response.data.data);
+            const blogs = response.data.data;
+            const filteredBlogs = blogs.filter((blog: BlogListDto) => !blog.isDeleted);
+            setBlogs(filteredBlogs);
         })
     }, [])
 
@@ -30,11 +32,27 @@ const MyBlogs = () => {
     }
 
     const handleDeleteBlogConfirm = async () => {
-        const title = (currentBlog?.title.length ?? 0) > 50 ? currentBlog?.title.substring(0, 50) + '...' : currentBlog?.title
+        if (!currentBlog) return;
 
         toast.dismiss();
-        toast.success(`Blog '${title}' deleted successfully!`);
+        BlogService.delete(currentBlog.id).then(() => {
+            const filteredBlogs = blogs.filter((blog) => blog.id !== currentBlog?.id);
+            setBlogs(filteredBlogs);
+        })
         setOpenAlert(false);
+    }
+
+    const handleChangeVisibility = (blog: BlogListDto) => {
+        toast.dismiss();
+        BlogService.changeVisibility(blog.id).then(() => {
+            const updatedBlogs = blogs.map((b) => {
+                if (b.id === blog.id) {
+                    b.isHidden = !b.isHidden;
+                }
+                return b;
+            });
+            setBlogs(updatedBlogs);
+        })
     }
 
     return (
@@ -55,7 +73,7 @@ const MyBlogs = () => {
                 <Grid item sm={12} md={6} lg={4} >
                     {blogs && blogs.length > 0 ? <>
                         {blogs?.map((blog, i) => (
-                            <BlogCard key={i} blog={blog} handleDeleteBlog={handleDeleteBlog} isOwner={true} />
+                            <BlogCard key={i} blog={blog} handleDeleteBlog={handleDeleteBlog} handleChangeVisibility={handleChangeVisibility} isOwner={true} />
                         ))}
                     </>
                         :

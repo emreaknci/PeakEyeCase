@@ -26,7 +26,9 @@ const AuthorPage = () => {
     });
 
     BlogService.getAllByAuthorId(id).then(response => {
-      setBlogs(response.data.data);
+      const data = response.data.data as BlogListDto[];
+      const filteredData = data.filter(blog => !blog.isHidden && !blog.isDeleted);
+      setBlogs(filteredData);
     });
 
 

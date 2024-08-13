@@ -47,9 +47,33 @@ const AuthorDetailPage = () => {
     }
 
     const handleDeleteBlogConfirm = async () => {
+        if (!currentBlog || !blogs) return;
+
         toast.dismiss();
-        toast.success(`Blog '${currentBlog?.title}' deleted successfully!`);
+        BlogService.delete(currentBlog.id).then(() => {
+            const filteredBlogs = blogs.map((b) => {
+                if (b.id === currentBlog.id) {
+                    b.isDeleted = true;
+                }
+                return b;
+            });
+            setBlogs(filteredBlogs);
+        })
         setOpenAlert(false);
+    }
+
+    const handleChangeVisibility = (blog: BlogListDto) => {
+        if (!blogs) return;
+        toast.dismiss();
+        BlogService.changeVisibility(blog.id).then(() => {
+            const updatedBlogs = blogs.map((b) => {
+                if (b.id === blog.id) {
+                    b.isHidden = !b.isHidden;
+                }
+                return b;
+            });
+            setBlogs(updatedBlogs);
+        })
     }
 
     return (
@@ -96,7 +120,7 @@ const AuthorDetailPage = () => {
                 <Grid item sm={12} md={6} lg={4} >
                     {blogs && blogs.length > 0 ? <>
                         {blogs?.map((blog, i) => (
-                            <BlogCard key={i} blog={blog} handleDeleteBlog={handleDeleteBlog} isOwner={true} />
+                            <BlogCard key={i} blog={blog} handleDeleteBlog={handleDeleteBlog} handleChangeVisibility={handleChangeVisibility} isOwner={true} />
                         ))}
                     </>
                         :

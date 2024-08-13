@@ -86,15 +86,25 @@ const Navbar = () => {
                     borderRadius: 3,
                   }}
                 >
-                  <InputBase placeholder="Search…"
+                  <InputBase
+                    placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
                     sx={{ ml: 1, flex: 1 }}
                     value={searchContext.searchTerm}
                     onChange={handleChange}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        searchContext.setIsClicked(true);
+                      }
+                    }}
                   />
-                  <IconButton type="submit" aria-label="search" onClick={() => {
-                    searchContext.setIsClicked(true);
-                  }}>
+                  <IconButton
+                    type="submit"
+                    aria-label="search"
+                    onClick={() => {
+                      searchContext.setIsClicked(true);
+                    }}
+                  >
                     <SearchIcon />
                   </IconButton>
 
@@ -113,7 +123,7 @@ const Navbar = () => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                {authContext.isAuthenticated ? [
+                {authContext.isAuthenticated && authContext.isTokenChecked ? [
                   <MenuItem key="profile" onClick={() => { navigate("/me") }}>My Profile</MenuItem>,
                   <MenuItem key="logout" onClick={() => authContext.logout()}>Logout</MenuItem>
                 ] : [

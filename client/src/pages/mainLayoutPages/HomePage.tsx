@@ -29,7 +29,7 @@ const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
       <CardMedia component="img"
         image={import.meta.env.VITE_IMAGE_URL + "/" + blog.imageUri} alt={blog.title}
         sx={{
-          width: '100%', objectFit: 'cover',
+          width: '100%', objectFit: 'fill',
           height: { xs: 200, sm: 300, md: 400 },
           borderRadius: 3,
           cursor: 'pointer'
@@ -73,7 +73,7 @@ const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
 };
 
 const HomePage = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate()
   const searchContext = useContext(SearchContext)
   const [loading, setLoading] = React.useState<boolean>(false);
   const { id } = useParams()
@@ -83,14 +83,19 @@ const HomePage = () => {
   const [searched, setSearched] = React.useState<boolean>(false)
 
   const setData = (blogs: BlogListDto[]) => {
-    const featuredBlog = blogs[0]
+    const filteredBlogs = blogs.filter(b => !b.isHidden && !b.isDeleted && !b.categoryIsDeleted)
+    if (filteredBlogs.length === 0) {
+      toast.info('No blogs found')
+    }
+    const featuredBlog = filteredBlogs[0]
     setFeaturedBlog(featuredBlog)
-    blogs.shift()
-    setBlogs(blogs)
+    filteredBlogs.shift()
+    setBlogs(filteredBlogs)
   }
   useEffect(() => {
     const getBlogs = () => {
       setLoading(true)
+
       BlogService.getAll().then(response => {
         console.log(response.data.data)
         setData(response.data.data)
@@ -98,39 +103,51 @@ const HomePage = () => {
       }).finally(() => {
         setLoading(false)
       })
+
     }
 
     const getBlogsByCategory = (id: string) => {
       setLoading(true)
+
       BlogService.getAllByCategoryId(id).then(response => {
         setData(response.data.data)
       }).catch(error => {
         navigate('/')
         toast.info('No blogs found for this category')
       }).finally(() => {
+        searchContext.setSearchTerm('')
         setLoading(false)
       })
+
     }
 
     const getCategory = (id: string) => {
       setLoading(true)
       CategoryService.getById(id).then(response => {
-        setCategory(response.data.data)
+        const data = response.data.data as Category
+        setCategory(data)
+
+        if (data.isDeleted) {
+          navigate('/')
+          toast.info('Category not found')
+          return
+        }
+        getBlogsByCategory(id)
+
       }).catch(error => {
-        toast.error('Category not found')
         navigate('/')
       }).finally(() => {
         setLoading(false)
       })
+
     }
-    console.log(id)
     if (id != undefined) {
       getCategory(id)
-      getBlogsByCategory(id)
     }
     else {
       getBlogs()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   useEffect(() => {
@@ -142,6 +159,7 @@ const HomePage = () => {
       }).catch(error => {
         toast.error(`No blogs found for "${searchContext.searchTerm}"`)
       }).finally(() => {
+        searchContext.setSearchTerm('')
         setLoading(false)
       })
 

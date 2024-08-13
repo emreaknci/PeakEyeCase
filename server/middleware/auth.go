@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/emreaknci/peakeyecase/server/model"
@@ -12,7 +11,6 @@ import (
 
 func Auth(requiredRoles []model.Role) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("Auth middleware triggered")
 
 		token := c.GetHeader("Authorization")
 		if token == "" {
@@ -29,7 +27,6 @@ func Auth(requiredRoles []model.Role) gin.HandlerFunc {
 		}
 
 		claims, err := jwt.ValidateToken(token)
-		fmt.Printf("Claims: %+v\n", claims)
 
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, response.CustomResponse{Message: "Invalid token", Error: "Unauthorized", StatusCode: http.StatusUnauthorized})

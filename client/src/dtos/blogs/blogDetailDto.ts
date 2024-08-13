@@ -4,6 +4,7 @@ export interface BlogDetailDto {
     content: string;
     categoryId: number;
     categoryName: string;
+    categoryIsDeleted: boolean;
     createdAt: string;
     imageUri: string;
     authorFullName: string;

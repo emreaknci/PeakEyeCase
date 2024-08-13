@@ -107,7 +107,7 @@ const userIconMap = [
 ];
 
 const adminIconMap = [
-  { name: 'Dashboard', icon: <DashboardIcon />, link: 'dashboard' },
+  // { name: 'Dashboard', icon: <DashboardIcon />, link: 'dashboard' },
   { name: 'Admins', icon: <AdminPanelSettingsIcon />, link: 'admins' },
   { name: 'Authors', icon: <SupervisorAccountIcon />, link: 'authors' },
   { name: 'Blogs', icon: <BorderColorIcon />, link: 'blogs' },
