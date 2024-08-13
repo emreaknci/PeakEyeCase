@@ -10,6 +10,7 @@ import ContactPage from './ContactPage';
 import Categories from '../../components/layouts/main/Categories';
 import { Category } from '../../models/category';
 import CategoryService from '../../services/category.service';
+import Support from '../../components/layouts/main/Support';
 
 const MainLayoutRoutes = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -43,6 +44,7 @@ const MainLayoutRoutes = () => {
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Container>
+      <Support />
       <Footer categories={categories}/>
     </>)
 }

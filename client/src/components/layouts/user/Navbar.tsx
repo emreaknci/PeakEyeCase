@@ -28,6 +28,7 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CategoryIcon from '@mui/icons-material/Category';
 import { AuthContext } from '../../../contexts/AuthContext';
 import LockIcon from '@mui/icons-material/Lock';
+import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 
 const drawerWidth = 240;
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -113,6 +114,7 @@ const adminIconMap = [
   { name: 'Blogs', icon: <BorderColorIcon />, link: 'blogs' },
   { name: 'Comments', icon: <CommentIcon />, link: 'comments' },
   { name: 'Categories', icon: <CategoryIcon />, link: 'categories' },
+  { name: 'Live Support', icon: <LiveHelpIcon />, link: 'live-support' },
 ];
 
 const Navbar = () => {

@@ -1,6 +1,6 @@
 import Navbar from '../../components/layouts/user/Navbar'
 import { Box } from '@mui/material'
-import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import ProfilePage from './ProfilePage'
 import MyBlogs from './MyBlogs'
 import AdminsPage from './AdminsPage'
@@ -13,20 +13,15 @@ import BlogsPage from './BlogsPage'
 import CommentsPage from './CommentsPage'
 import MyComments from './MyComments'
 import CategoriesPage from './CategoriesPage'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
 import ChangePasswordPage from './ChangePasswordPage'
+import LiveSupportPage from './LiveSupportPage'
 
 
 const UserLayoutRoutes = () => {
   const authContext = useContext(AuthContext);
-  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!authContext.isAuthenticated && authContext.isTokenChecked) {
-  //     navigate("/");
-  //   }
-  // }, [authContext.isAuthenticated, authContext.isTokenChecked, navigate])
   return (
     <Box sx={{ display: 'flex' }}>
       <Navbar />
@@ -43,6 +38,8 @@ const UserLayoutRoutes = () => {
             <Route path="/blogs?author=:author" element={<BlogsPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/comments" element={<CommentsPage />} />
+            <Route path="/live-support" element={<LiveSupportPage />} />
+
           </>
           }
           <Route path="/" element={<ProfilePage />} />
