@@ -7,7 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-quill/dist/quill.snow.css';
 import { AuthProvider } from './contexts/AuthContext.tsx'
 import { SearchProvider } from './contexts/SearchTermContext.tsx'
-
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
     <ToastContainer

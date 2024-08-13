@@ -1,6 +1,8 @@
 import { Box, Container, Grid, Link, Typography, Divider, TextField, Button, InputAdornment } from '@mui/material';
 import { styled } from '@mui/system';
 import EmailIcon from '@mui/icons-material/Email';
+import { useNavigate } from 'react-router-dom';
+import { Category } from '../../../models/category';
 
 const FooterContainer = styled(Box)(({ theme }) => ({
   borderTop: `1px solid ${theme.palette.divider}`,
@@ -27,7 +29,8 @@ const FooterLink = styled(Link)(({ theme }) => ({
   }
 }));
 
-const Footer = () => {
+const Footer = ({ categories }: { categories: Category[] }) => {
+  const navigate = useNavigate();
   return (
     <FooterContainer>
       <Container>
@@ -57,10 +60,10 @@ const Footer = () => {
                   <Typography variant="h6" gutterBottom>
                     Quick Link
                   </Typography>
-                  <FooterLink href="#">Home</FooterLink>
-                  <FooterLink href="#">About</FooterLink>
-                  <FooterLink href="#">Contact</FooterLink>
-                  <FooterLink href="#">Blog</FooterLink>
+                  <FooterLink onClick={() => navigate(`/`)}>Home</FooterLink>
+                  <FooterLink onClick={() => navigate(`/`)}>About</FooterLink>
+                  <FooterLink onClick={() => navigate(`/contact`)}>Contact</FooterLink>
+                  <FooterLink onClick={() => navigate(`/blog`)}>Blog</FooterLink>
 
 
                 </FooterSection>
@@ -70,10 +73,12 @@ const Footer = () => {
                   <Typography variant="h6" gutterBottom>
                     Category
                   </Typography>
-                  <FooterLink href="#">Technology</FooterLink>
-                  <FooterLink href="#">Finance</FooterLink>
-                  <FooterLink href="#">Health</FooterLink>
-                  <FooterLink href="#">Travel</FooterLink>
+
+                  {categories.slice(0, 4).map(category => (
+                    <FooterLink key={category.id} onClick={() => navigate(`/category/${category.id}`)}>
+                      {category.name}
+                    </FooterLink>
+                  ))}
                 </FooterSection>
               </Grid>
             </Grid>
@@ -122,9 +127,9 @@ const Footer = () => {
           </Grid>
           <Grid item>
 
-            <FooterLink sx={{ display: 'inline-block',mx:1 }} href="#">Terms of Use</FooterLink>
-            <FooterLink sx={{ display: 'inline-block',mx:1 }} href="#">Privacy Policy</FooterLink>
-            <FooterLink sx={{ display: 'inline-block',mx:1 }} href="#">Cookie Policy</FooterLink>
+            <FooterLink sx={{ display: 'inline-block', mx: 1 }} href="#">Terms of Use</FooterLink>
+            <FooterLink sx={{ display: 'inline-block', mx: 1 }} href="#">Privacy Policy</FooterLink>
+            <FooterLink sx={{ display: 'inline-block', mx: 1 }} href="#">Cookie Policy</FooterLink>
 
           </Grid>
         </Grid>

@@ -73,6 +73,7 @@ const FeaturedBlog = ({ blog }: { blog: BlogListDto }) => {
 };
 
 const HomePage = () => {
+  const navigate=useNavigate()
   const searchContext = useContext(SearchContext)
   const [loading, setLoading] = React.useState<boolean>(false);
   const { id } = useParams()
@@ -103,6 +104,9 @@ const HomePage = () => {
       setLoading(true)
       BlogService.getAllByCategoryId(id).then(response => {
         setData(response.data.data)
+      }).catch(error => {
+        navigate('/')
+        toast.info('No blogs found for this category')
       }).finally(() => {
         setLoading(false)
       })
@@ -112,6 +116,9 @@ const HomePage = () => {
       setLoading(true)
       CategoryService.getById(id).then(response => {
         setCategory(response.data.data)
+      }).catch(error => {
+        toast.error('Category not found')
+        navigate('/')
       }).finally(() => {
         setLoading(false)
       })

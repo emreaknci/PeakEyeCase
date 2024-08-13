@@ -18,10 +18,10 @@ const CustomTextAreaComponent = (props: CustomTextAreaComponentProps) => {
       disabled={props.disabled}
       style={{
         width: '100%',
-        padding: '1rem',
+        padding: '.5rem',
         outline: 'none',
         resize: 'none',
-        borderRadius: '1rem',
+        borderRadius: '.1rem',
         borderBottom: `.2rem solid ${theme.palette.divider}`,
         border: "none",
         backgroundColor: theme.palette.divider,
