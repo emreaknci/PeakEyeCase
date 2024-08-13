@@ -51,11 +51,18 @@ const MyBlogs = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-                {blogs?.map((blog, i) => (
-                    <Grid item sm={12} md={6} lg={4} key={i}>
-                        <BlogCard blog={blog} handleDeleteBlog={handleDeleteBlog} isOwner={true} />
-                    </Grid>
-                ))}
+
+                <Grid item sm={12} md={6} lg={4} >
+                    {blogs && blogs.length > 0 ? <>
+                        {blogs?.map((blog, i) => (
+                            <BlogCard key={i} blog={blog} handleDeleteBlog={handleDeleteBlog} isOwner={true} />
+                        ))}
+                    </>
+                        :
+                        <Typography variant='h6'>No blogs found</Typography>
+                    }
+
+                </Grid>
 
             </Grid>
             {openAlert && (

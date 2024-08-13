@@ -41,7 +41,7 @@ const BlogsPage = () => {
             BlogService.getAll().then((response) => {
                 setBlogs(response.data.data);
             })
-        
+
 
         }
         getBlogs();
@@ -143,39 +143,53 @@ const BlogsPage = () => {
                         </TableHead>
 
                         <TableBody>
-                            {filteredBlogs && filteredBlogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((blog) => (
-                                <TableRow key={blog.id}>
-                                    <TableCell>#{blog.id}</TableCell>
-                                    <TableCell>{blog.title} </TableCell>
-                                    <TableCell>{blog.authorFullName}</TableCell>
+                            {filteredBlogs && filteredBlogs.length > 0 ?
+                                <>
+                                    {filteredBlogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((blog) => (
+                                        <TableRow key={blog.id}>
+                                            <TableCell>#{blog.id}</TableCell>
+                                            <TableCell>{blog.title} </TableCell>
+                                            <TableCell>{blog.authorFullName}</TableCell>
 
-                                    <TableCell>
-                                        {blog.isDeleted ? (
-                                            <span style={{ color: 'red' }}>Deleted {blog.isDeleted}</span>
-                                        ) : blog.isHidden ? (
-                                            <span style={{ color: 'orange' }}>Hidden</span>
-                                        ) : (
-                                            <span style={{ color: 'green' }}>Active</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell> <CategoryButton id={blog.categoryId} name={blog.categoryName} /> </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            sx={{ borderRadius: 3 }}
-                                            variant="outlined" color="primary"
-                                            onClick={(event) => handleMenuClick(event, blog)}
-                                        >
-                                            Actions
-                                        </Button>
-                                        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} >
-                                            <MenuItem onClick={() => navigate(`/blog/${currentBlog?.id}`)}>View Blog</MenuItem>
-                                            <MenuItem onClick={() => navigate(`/me/authors/${currentBlog?.authorId}`)}>View Author</MenuItem>
-                                            <MenuItem sx={{ color: "red" }} onClick={() => handleDelete(currentBlog)}>Delete</MenuItem>
-                                        </Menu>
+                                            <TableCell>
+                                                {blog.isDeleted ? (
+                                                    <span style={{ color: 'red' }}>Deleted {blog.isDeleted}</span>
+                                                ) : blog.isHidden ? (
+                                                    <span style={{ color: 'orange' }}>Hidden</span>
+                                                ) : (
+                                                    <span style={{ color: 'green' }}>Active</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell> <CategoryButton id={blog.categoryId} name={blog.categoryName} /> </TableCell>
+                                            <TableCell>
+                                                <Button
+                                                    sx={{ borderRadius: 3 }}
+                                                    variant="outlined" color="primary"
+                                                    onClick={(event) => handleMenuClick(event, blog)}
+                                                >
+                                                    Actions
+                                                </Button>
+                                                <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} >
+                                                    <MenuItem onClick={() => navigate(`/blog/${currentBlog?.id}`)}>View Blog</MenuItem>
+                                                    <MenuItem onClick={() => navigate(`/me/authors/${currentBlog?.authorId}`)}>View Author</MenuItem>
+                                                    <MenuItem sx={{ color: "red" }} onClick={() => handleDelete(currentBlog)}>Delete</MenuItem>
+                                                </Menu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </>
+                                :
+                                <TableRow>
+                                    <TableCell colSpan={6}>
+                                        <Typography variant='h6'>
+                                            No blogs found
+                                        </Typography>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            }
                         </TableBody>
+
+
 
                     </Table>
                     {filteredBlogs && <TablePagination

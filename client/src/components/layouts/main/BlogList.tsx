@@ -19,14 +19,23 @@ const BlogList = (props: BlogListProps) => {
           {props.title}
         </Typography>
       </Grid>}
-      {props.blogs.map((blog, index) => (
+      {props.blogs && props.blogs.length > 0 && props.blogs.map((blog, index) => (
         <Grid item xs={12} sm={6} md={4} key={index}>
           <BlogCard blog={blog} />
         </Grid>
       ))}
-      {props.showLoadMoreButton && <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+      {props.blogs && props.blogs.length === 0 &&
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Typography variant='h6'>
+            No more blogs found in this category. Log in or sign up to write a blog now!
+          </Typography>
+        </Grid>
+      }
+
+
+      {/* {props.showLoadMoreButton && <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
         <LoadMoreButton />
-      </Grid>}
+      </Grid>} */}
     </Grid>)
 }
 

@@ -10,4 +10,5 @@ type Blog struct {
 	UserId     uint     `json:"authorId"`
 	User       User     `json:"-"`
 	ImageUri   string   `json:"imageUri"`
+	Comments   []Comment `json:"-"`
 }

@@ -53,3 +53,30 @@ func DeleteFile(fileName string) response.CustomResponse {
 	return response.CustomResponse{Message: "File deleted successfully", StatusCode: http.StatusOK, Status: true}
 
 }
+
+func SaveFileFromPath(sourcePath string, destDir string) response.CustomResponse {
+	sourceFile, err := os.Open(sourcePath)
+	if err != nil {
+		return response.CustomResponse{Message: "Could not open source file", Error: "Internal Server Error", StatusCode: http.StatusInternalServerError, Status: false}
+	}
+	defer sourceFile.Close()
+
+	if err := os.MkdirAll(destDir, os.ModePerm); err != nil {
+		return response.CustomResponse{Message: "Directory could not be created", Error: "Internal Server Error", StatusCode: http.StatusInternalServerError, Status: false}
+	}
+
+	fileName := filepath.Base(sourcePath)
+	destPath := filepath.Join(destDir, fileName)
+
+	destFile, err := os.Create(destPath)
+	if err != nil {
+		return response.CustomResponse{Message: "File could not be created", Error: "Internal Server Error", StatusCode: http.StatusInternalServerError, Status: false}
+	}
+	defer destFile.Close()
+
+	if _, err := io.Copy(destFile, sourceFile); err != nil {
+		return response.CustomResponse{Message: "File could not be copied", Error: "Internal Server Error", StatusCode: http.StatusInternalServerError, Status: false}
+	}
+
+	return response.CustomResponse{Message: "File saved successfully", Data: fileName, StatusCode: http.StatusOK, Status: true}
+}

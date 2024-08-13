@@ -37,7 +37,7 @@ const Comments = (props: CommentsProps) => {
   return (
     <>
       <Grid container spacing={4}>
-        {props.comments.map((comment) => (
+        {props.comments.length > 0 && props.comments.map((comment) => (
           <Grid item xs={12} sm={6} md={6} lg={4} key={comment.id}>
             <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%', }} >
               <CardContent sx={{ flex: 1 }} >
@@ -65,6 +65,15 @@ const Comments = (props: CommentsProps) => {
             </Card>
           </Grid>
         ))}
+        {props.comments.length === 0 &&
+          <Grid item xs={12}>
+            <Typography variant="h6" component="div" marginTop={2}>
+              No comments found
+            </Typography>
+          </Grid>
+        }
+
+
       </Grid>
       {openAlert && (
         <DialogComponent

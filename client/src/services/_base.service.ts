@@ -46,6 +46,8 @@ axiosInstance.interceptors.response.use(
         const statusCode = error.response ? error.response.data.statusCode : null;
         const message = error.response ? error.response.data.message : "An unknown error occurred";
 
+        
+
         let toastType: "error" | "warning" | "info" = "error";
 
         switch (statusCode) {
@@ -59,8 +61,7 @@ axiosInstance.interceptors.response.use(
                 toastType = "warning";
                 break;
             case 404:
-                toastType = "warning";
-                break;
+                return Promise.reject(error);
             case 500:
                 toastType = "error";
                 break;

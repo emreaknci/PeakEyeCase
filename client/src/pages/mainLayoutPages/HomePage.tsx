@@ -80,11 +80,11 @@ const HomePage = () => {
 
   useEffect(() => {
     const setData = (blogs: BlogListDto[]) => {
-      const featuredBlog =blogs[0]
+      const featuredBlog = blogs[0]
       setFeaturedBlog(featuredBlog)
       blogs.shift()
       setBlogs(blogs)
-    
+
     }
     const getBlogs = () => {
       setLoading(true)

@@ -26,7 +26,7 @@ const AuthorDetailPage = () => {
     useEffect(() => {
         if (!id) return;
 
-        UserService.getById(id).then(response => {
+        UserService.getById(Number(id)).then(response => {
             const defaultSocialLinks: string[] = ['https://www.facebook.com/', 'https://www.twitter.com/',];
             const data = response.data.data as AuthorDetailDto;
             data.socialLinks = defaultSocialLinks
@@ -93,11 +93,17 @@ const AuthorDetailPage = () => {
                     </Typography>
                 </Grid>
 
-                {blogs?.map((blog, i) => (
-                    <Grid item sm={12} md={6} lg={4} xl={3} key={i}>
-                        <BlogCard blog={blog} handleDeleteBlog={handleDeleteBlog} isOwner={false} />
-                    </Grid>
-                ))}
+                <Grid item sm={12} md={6} lg={4} >
+                    {blogs && blogs.length > 0 ? <>
+                        {blogs?.map((blog, i) => (
+                            <BlogCard key={i} blog={blog} handleDeleteBlog={handleDeleteBlog} isOwner={true} />
+                        ))}
+                    </>
+                        :
+                        <Typography variant='h6'>No blogs found</Typography>
+                    }
+
+                </Grid>
             </Grid>
             {openAlert && (
                 <DialogComponent
